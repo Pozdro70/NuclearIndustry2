@@ -25,6 +25,23 @@ repositories {
             includeGroup 'maven.modrinth'
         }
     }
+    repositories {
+        maven {
+            name = "ic2"
+            url = "https://maven.ic2.player.to/"
+        }
+    }
+    maven {
+        // location of the maven that hosts JEI files
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
+
     mavenLocal() // Must be last for caching to work
 }
 
@@ -67,6 +84,10 @@ dependencies {
     // compileOnly = compile time dependency
     // annotationProcessor = annotation processing dependencies
     // shade = includes dependency in output
+    compileOnly rfg.deobf('net.industrial-craft:industrialcraft-2:2.8.222-ex112:api')
+    runtimeOnly rfg.deobf('net.industrial-craft:industrialcraft-2:2.8.222-ex112')
+    compileOnly "mezz.jei:jei_1.12.2:4.16.1.302:api"
+    runtimeOnly "mezz.jei:jei_1.12.2:4.16.1.302"
 
     // Transitive dependencies:
     // (Dependencies that your dependency depends on)
