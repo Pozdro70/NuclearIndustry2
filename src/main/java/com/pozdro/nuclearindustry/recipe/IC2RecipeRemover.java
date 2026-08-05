@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class IC2RecipeRemover {
-    //I DON'T RECOMMEND USING THIS SHITTY CODE FROM NOW ON, but if you do, please credit me somehow, I spent 5 hours on this shit
+    //I DON'T RECOMMEND USING THIS SHITTY CODE FROM NOW ON, but if you do, please credit me somehow
     //if someone from ic2 devteam reads this, PLEASE add something like Recipes.whateverMachine.remove(recipe)
 
     @SuppressWarnings("unchecked")

@@ -6,6 +6,7 @@ import ic2.api.recipe.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -38,6 +39,8 @@ public class ModRecipes {
             ).setRegistryName("test_recipe")
     );
      */
+
+    //public static final IRecipe TEST2 = newRecipe(new ShapelessRecipes())
 
     @SubscribeEvent
     public static void registerCraftingRecipes(RegistryEvent.Register<IRecipe> event) {
