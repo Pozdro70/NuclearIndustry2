@@ -2,6 +2,7 @@ package com.pozdro.nuclearindustry;
 
 
 
+import com.pozdro.nuclearindustry.recipe.ModRecipes;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -30,6 +31,7 @@ public class NuclearIndustry {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         ModRecipes.removeRecipes();
+
     }
 
 }

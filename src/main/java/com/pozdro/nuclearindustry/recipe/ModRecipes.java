@@ -1,26 +1,20 @@
-package com.pozdro.nuclearindustry;
+package com.pozdro.nuclearindustry.recipe;
 
-import com.pozdro.nuclearindustry.block.ModBlocks;
-import com.pozdro.nuclearindustry.item.ModItems;
+import com.pozdro.nuclearindustry.NuclearIndustry;
 import ic2.api.item.IC2Items;
-import ic2.api.recipe.ICannerBottleRecipeManager;
-import ic2.api.recipe.MachineRecipe;
-import ic2.api.recipe.Recipes;
-import net.minecraft.init.Items;
+import ic2.api.recipe.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.registries.ForgeRegistry;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
 
 @Mod.EventBusSubscriber(modid = NuclearIndustry.MODID)
 public class ModRecipes {
@@ -50,13 +44,7 @@ public class ModRecipes {
         event.getRegistry().registerAll(modRecipes.toArray(new IRecipe[0]));
     }
 
-    public static void removeRecipes(){ //FMLPostInit
-        final List<Item> removedRecipes = new ArrayList<>();
-
-        removedRecipes.add(IC2Items.getItem("nuclear","uranium").getItem()); //Enriched Uranium Nuclear Fuel
-        removedRecipes.add(IC2Items.getItem("uranium_fuel_rod").getItem()); //Uranium Fuel Rod
-
-
+    public static void removeCraftingRecipesByOutput(List<Item> removedRecipes){
         ForgeRegistry<IRecipe> registry = (ForgeRegistry<IRecipe>) ForgeRegistries.RECIPES;
 
         for (IRecipe recipe : new ArrayList<>(registry.getValuesCollection())) {
@@ -67,30 +55,27 @@ public class ModRecipes {
                 registry.remove(recipe.getRegistryName());
             }
         }
+    }
 
+    public static void removeRecipes(){ //FMLPostInit
 
+        removeCraftingRecipesByOutput(Arrays.asList(
+                IC2Items.getItem("nuclear","uranium").getItem() //Enriched Uranium Nuclear Fuel
+        ));
 
-        @SuppressWarnings("unchecked")
-        List<MachineRecipe<ICannerBottleRecipeManager.Input, ItemStack>> recipes =
-                (List<MachineRecipe<ICannerBottleRecipeManager.Input, ItemStack>>) Recipes.cannerBottle.getRecipes();
+        IC2RecipeRemover.removeBasicMachineRecipesByInput(Recipes.oreWashing,Arrays.asList(
+                IC2Items.getItem("crushed","uranium").getItem() //Crushed Uranium
+        ));
 
-        Iterator<MachineRecipe<ICannerBottleRecipeManager.Input, ItemStack>> it = recipes.iterator();
-
-        while (it.hasNext()){
-            MachineRecipe<ICannerBottleRecipeManager.Input, ItemStack> recipe = it.next();
-            ItemStack output= recipe.getOutput();
-
-            if(removedRecipes.contains(output.getItem())){
-                it.remove();
-            }
-        }
-
-
-
-
-
+        IC2RecipeRemover.removeCannerBottleRecipesByOutput(Arrays.asList(
+                IC2Items.getItem("uranium_fuel_rod").getItem() //Uranium Fuel Rod
+        ));
 
 
     }
+
+
+
+
 
 }
