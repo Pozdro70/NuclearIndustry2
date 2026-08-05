@@ -44,14 +44,14 @@ public class ModRecipes {
         event.getRegistry().registerAll(modRecipes.toArray(new IRecipe[0]));
     }
 
-    public static void removeCraftingRecipesByOutput(List<Item> removedRecipes){
+    public static void removeCraftingRecipesByOutput(List<ItemStack> removedRecipes){
         ForgeRegistry<IRecipe> registry = (ForgeRegistry<IRecipe>) ForgeRegistries.RECIPES;
 
         for (IRecipe recipe : new ArrayList<>(registry.getValuesCollection())) {
             ItemStack output = recipe.getRecipeOutput();
 
 
-            if(removedRecipes.contains(output.getItem())){
+            if(removedRecipes.contains(output)){
                 registry.remove(recipe.getRegistryName());
             }
         }
@@ -60,15 +60,19 @@ public class ModRecipes {
     public static void removeRecipes(){ //FMLPostInit
 
         removeCraftingRecipesByOutput(Arrays.asList(
-                IC2Items.getItem("nuclear","uranium").getItem() //Enriched Uranium Nuclear Fuel
+                IC2Items.getItem("nuclear","uranium") //Enriched Uranium Nuclear Fuel
         ));
 
         IC2RecipeRemover.removeBasicMachineRecipesByInput(Recipes.oreWashing,Arrays.asList(
-                IC2Items.getItem("crushed","uranium").getItem() //Crushed Uranium
+                IC2Items.getItem("crushed","uranium") //Crushed Uranium
+        ));
+
+        IC2RecipeRemover.removeBasicMachineRecipesByInput(Recipes.centrifuge,Arrays.asList(
+                IC2Items.getItem("crushed","uranium") //Crushed Uranium
         ));
 
         IC2RecipeRemover.removeCannerBottleRecipesByOutput(Arrays.asList(
-                IC2Items.getItem("uranium_fuel_rod").getItem() //Uranium Fuel Rod
+                IC2Items.getItem("uranium_fuel_rod") //Uranium Fuel Rod
         ));
 
 

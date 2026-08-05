@@ -18,7 +18,7 @@ public class IC2RecipeRemover {
     @SuppressWarnings("unchecked")
     public static void removeBasicMachineRecipesByInput(
             IBasicMachineRecipeManager manager,
-            List<Item> itemsToRemove
+            List<ItemStack> stacksToRemove
     ) {
         /*
         SHOULD work for those:
@@ -46,51 +46,40 @@ public class IC2RecipeRemover {
 
         */
 
-        try {
-            Class<?> helperClass = Class.forName("ic2.core.recipe.MachineRecipeHelper");
+        @SuppressWarnings("unchecked")
+        Iterable<MachineRecipe<IRecipeInput, Collection<ItemStack>>> recipes =
+                (Iterable<MachineRecipe<IRecipeInput, Collection<ItemStack>>>) manager.getRecipes();
 
-            Field recipesField = helperClass.getDeclaredField("recipes");
-            recipesField.setAccessible(true);
+        Iterator<MachineRecipe<IRecipeInput, Collection<ItemStack>>> it = recipes.iterator();
 
-            Map<IRecipeInput, MachineRecipe<IRecipeInput, Collection<ItemStack>>> recipes =
-                    (Map<IRecipeInput, MachineRecipe<IRecipeInput, Collection<ItemStack>>>)
-                            recipesField.get(manager);
+        while (it.hasNext()) {
+            MachineRecipe<IRecipeInput, Collection<ItemStack>> recipe = it.next();
 
-            Method removeCachedRecipes =
-                    helperClass.getDeclaredMethod("removeCachedRecipes", Object.class);
-            removeCachedRecipes.setAccessible(true);
+            boolean remove = false;
 
-            Iterator<Map.Entry<IRecipeInput, MachineRecipe<IRecipeInput, Collection<ItemStack>>>> it =
-                    recipes.entrySet().iterator();
+            for (ItemStack input : recipe.getInput().getInputs()) {
 
-            while (it.hasNext()) {
-                Map.Entry<IRecipeInput, MachineRecipe<IRecipeInput, Collection<ItemStack>>> entry = it.next();
+                for (ItemStack target : stacksToRemove) {
 
-                boolean remove = false;
-
-                for (ItemStack input : entry.getKey().getInputs()) {
-                    if (itemsToRemove.contains(input.getItem())) {
+                    if (input.isItemEqual(target)) {
                         remove = true;
                         break;
                     }
                 }
 
                 if (remove) {
-                    IRecipeInput recipeInput = entry.getKey();
-
-                    it.remove();
-                    removeCachedRecipes.invoke(manager, recipeInput);
+                    break;
                 }
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("---IC2RecipeRemoval Error End---");
+            if (remove) {
+                it.remove();
+            }
         }
     }
 
     @SuppressWarnings("unchecked")
-    public static void removeCannerBottleRecipesByOutput(List<Item> removedRecipes){
+    public static void removeCannerBottleRecipesByOutput(List<ItemStack> removedRecipes){
         List<MachineRecipe<ICannerBottleRecipeManager.Input, ItemStack>> cannerBottleRecipes =
                 (List<MachineRecipe<ICannerBottleRecipeManager.Input, ItemStack>>) Recipes.cannerBottle.getRecipes();
 
@@ -100,7 +89,7 @@ public class IC2RecipeRemover {
             MachineRecipe<ICannerBottleRecipeManager.Input, ItemStack> recipe = cannerBottleIt.next();
             ItemStack output= recipe.getOutput();
 
-            if(removedRecipes.contains(output.getItem())){
+            if(removedRecipes.contains(output)){
                 cannerBottleIt.remove();
             }
         }
