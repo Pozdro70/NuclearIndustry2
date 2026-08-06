@@ -1,0 +1,9 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "front": "nuclearindustry:blocks/te/leacher_front_off",
+    "side": "nuclearindustry:blocks/te/backplate",
+    "top": "nuclearindustry:blocks/te/backplate",
+    "bottom": "nuclearindustry:blocks/te/backplate"
+  }
+}
