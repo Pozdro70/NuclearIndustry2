@@ -110,6 +110,7 @@ public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgress
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
         super.renderHoveredToolTip(mouseX, mouseY);
 
+
         tile.getFluidTanks().forEach((tankID, fluidTank) -> {
             Map.Entry<Integer, Integer> size = tankSize.get(tankID);
             Map.Entry<Integer, Integer> pos = tankPos.get(tankID);
@@ -135,7 +136,10 @@ public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgress
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX,mouseY);
     }
+
+
 
 
 }

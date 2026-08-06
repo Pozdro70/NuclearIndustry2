@@ -119,8 +119,55 @@ public class BasicMachineContainer<T extends TileEntity & IHasInventory & IHasPr
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-        return ItemStack.EMPTY;
+    public ItemStack transferStackInSlot(EntityPlayer player, int index) {
+        ItemStack result = ItemStack.EMPTY;
+        Slot slot = this.inventorySlots.get(index);
+
+        if (slot != null && slot.getHasStack()) {
+            ItemStack stackInSlot = slot.getStack();
+            result = stackInSlot.copy();
+
+            int machineSlotCount = tile.getInventoryHandler().getSlots();
+            int playerInvStart = machineSlotCount;
+            int playerInvEnd = playerInvStart + 27; //27-player inventory slot count
+            int hotbarStart = playerInvEnd;
+            int hotbarEnd = hotbarStart + 9; //9 hotbar slots
+
+            if (index < machineSlotCount) {
+                //clicked a tileEntity slot
+                if (!mergeItemStack(stackInSlot, playerInvStart, hotbarEnd, true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (index < playerInvEnd) {
+                //clicked a player main inventory slot
+                if (!mergeItemStack(stackInSlot, 0, 1, false)) {
+                    if (!mergeItemStack(stackInSlot, hotbarStart, hotbarEnd, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                }
+            } else if (index < hotbarEnd) {
+                //clicked a hotbar slot
+                if (!mergeItemStack(stackInSlot, 0, 1, false)) {
+                    if (!mergeItemStack(stackInSlot, playerInvStart, playerInvEnd, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                }
+            }
+
+            if (stackInSlot.isEmpty()) {
+                slot.putStack(ItemStack.EMPTY);
+            } else {
+                slot.onSlotChanged();
+            }
+
+            if (stackInSlot.getCount() == result.getCount()) {
+                return ItemStack.EMPTY;
+            }
+
+            slot.onTake(player, stackInSlot);
+        }
+
+        return result;
     }
 
     @Override
@@ -137,4 +184,7 @@ public class BasicMachineContainer<T extends TileEntity & IHasInventory & IHasPr
 
         }
     }
+
+
+
 }
