@@ -141,8 +141,11 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
     }
 
     @Override
-    public void setClientEnergy(int energy) {
-        clientEnergy=energy;
+    public void setClientEnergy(int cenergy) {
+        clientEnergy=cenergy;
+        if(clientEnergy>energy.getCapacity()){
+            clientEnergy= (int) energy.getCapacity();
+        }
     }
 
     @Override
