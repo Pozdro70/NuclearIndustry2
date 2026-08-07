@@ -89,6 +89,8 @@ dependencies {
     compileOnly "mezz.jei:jei_1.12.2:4.16.1.302:api"
     runtimeOnly "mezz.jei:jei_1.12.2:4.16.1.302"
 
+    runtimeOnly files('runtimeLibs/Mekanism-1.12.2.jar')
+
     // Transitive dependencies:
     // (Dependencies that your dependency depends on)
     // If you wish to exclude transitive dependencies in the described dependencies

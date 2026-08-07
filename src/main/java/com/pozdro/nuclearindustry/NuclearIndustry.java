@@ -20,7 +20,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = NuclearIndustry.MODID, name = Tags.MOD_NAME, version = Tags.VERSION)
+@Mod(modid = NuclearIndustry.MODID, name = Tags.MOD_NAME, version = Tags.VERSION,dependencies = "required-after:ic2")
 public class NuclearIndustry {
 
     public static final String MODID= Tags.MOD_ID; //I like setting my modid like that, instead it is better to use Tags.MOD_ID everywhere.

@@ -1,11 +1,13 @@
 package com.pozdro.nuclearindustry.block.tile;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
+import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
 import com.pozdro.nuclearindustry.fluid.ModFluids;
 import com.pozdro.nuclearindustry.recipe.FluidIngredient;
 import com.pozdro.nuclearindustry.recipe.FluidTankMachineRecipe;
 import com.pozdro.nuclearindustry.recipe.ItemIngredient;
 import ic2.api.energy.prefab.BasicSink;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
@@ -14,6 +16,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -47,6 +51,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
         }
     };
 
+    private boolean isRunning = false;
 
 
     public final FluidTank tankIn = new FluidTank(10000) { //ID = 0
@@ -188,6 +193,9 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
 
         //RECIPE CHECKING
+        boolean wasRunning = isRunning;
+        isRunning = false;
+
         boolean anyRecipeMatch = false;
 
         for (FluidTankMachineRecipe recipe : RECIPES) {
@@ -285,7 +293,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
 
             if (recipeMatches) {
-
+                isRunning = true;
                 anyRecipeMatch = true;
 
                 maxProgress = recipe.processingTime();
@@ -382,6 +390,23 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
         if (!anyRecipeMatch) {
             progress = 0;
         }
+
+        if (wasRunning != isRunning) {
+
+            IBlockState state = world.getBlockState(pos);
+
+            world.setBlockState(
+                    pos,
+                    world.getBlockState(pos)
+                            .withProperty(BasicMachineBlock.LIT, isRunning),
+                    2
+            );
+        }
+    }
+
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+        return oldState.getBlock() != newSate.getBlock();
     }
 
     @Override
