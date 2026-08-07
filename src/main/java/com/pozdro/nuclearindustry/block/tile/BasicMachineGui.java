@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -137,6 +138,12 @@ public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgress
         fontRenderer.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 0x404040);
     }
 
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX,mouseY);
+    }
 
     @Override
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
@@ -162,17 +169,28 @@ public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgress
                 drawHoveringText(tooltip, mouseX, mouseY);
             }
         });
+
+
+        int x = guiLeft + energyBarPosX;
+        int y = guiTop + energyBarPosY;
+
+        if (mouseX >= x && mouseX <= x + 6 &&
+                mouseY >= y && mouseY <= y + energyBarRenderHeight) {
+
+            List<String> tooltip = new ArrayList<>();
+
+            int energy = tile.getClientEnergy();
+            int maxEnergy = 10000;
+
+            tooltip.add(energy + " / " + maxEnergy + " EU");
+            tooltip.add((energy * 100 / maxEnergy) + "%");
+
+            drawHoveringText(tooltip, mouseX, mouseY);
+            return;
+        }
+
+        super.renderHoveredToolTip(mouseX, mouseY);
+
     }
-
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        this.drawDefaultBackground();
-        super.drawScreen(mouseX, mouseY, partialTicks);
-        this.renderHoveredToolTip(mouseX,mouseY);
-    }
-
-
-
-
 
 }
