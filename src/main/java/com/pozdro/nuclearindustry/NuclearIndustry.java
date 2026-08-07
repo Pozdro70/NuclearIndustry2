@@ -45,6 +45,7 @@ public class NuclearIndustry {
         //OreDictionary.registerOre("iron_ingot",ModItems.test);
 
         LeacherTileEntity.renderGUI();
+        ModRecipes.addModRecipes();
     }
 
 

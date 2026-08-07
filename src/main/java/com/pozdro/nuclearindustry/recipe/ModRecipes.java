@@ -1,6 +1,7 @@
 package com.pozdro.nuclearindustry.recipe;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
+import com.pozdro.nuclearindustry.block.tile.LeacherTileEntity;
 import ic2.api.item.IC2Items;
 import ic2.api.recipe.*;
 import net.minecraft.item.Item;
@@ -81,8 +82,7 @@ public class ModRecipes {
 
     }
 
+    public static void addModRecipes() {
 
-
-
-
+    }
 }

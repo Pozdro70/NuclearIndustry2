@@ -55,8 +55,6 @@ public class BasicMachineContainer<T extends TileEntity & IHasInventory & IHasPr
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
 
-
-
         //if any data updated, sync data
         if(tile.getProgress() != lastProgress){
             for (IContainerListener listener : this.listeners) {

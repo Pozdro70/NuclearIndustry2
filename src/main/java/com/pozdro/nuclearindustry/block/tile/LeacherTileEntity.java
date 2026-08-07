@@ -2,8 +2,10 @@ package com.pozdro.nuclearindustry.block.tile;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.fluid.ModFluids;
+import com.pozdro.nuclearindustry.recipe.FluidTankMachineRecipe;
 import ic2.api.energy.prefab.BasicSink;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -19,12 +21,14 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public class LeacherTileEntity extends TileEntity implements ITickable, IHasInventory,ISettableTank, IHasProgressAndEnergy {
+public class LeacherTileEntity extends TileEntity implements ITickable, IHasInventory, ISettableTank, IHasProgressAndEnergy {
+
+    public static final List<FluidTankMachineRecipe> RECIPES = new ArrayList<>();
+
 
     public static final int INVENTORY_SIZE = 11;
 
@@ -32,6 +36,11 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
         @Override
         protected void onContentsChanged(int slot) {
             markDirty();
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            return super.isItemValid(slot, stack);
         }
     };
 
@@ -86,7 +95,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
                 guiSlots,
                 new ResourceLocation(NuclearIndustry.MODID, "textures/gui/leachergui.png"),
                 LeacherTileEntity.class,
-                "container.leacher",
+                "Leacher",
                 true,
                 26,
                 47,
@@ -97,7 +106,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
                 15,
                 tankSize,
                 tankPos,
-                9 ,20,
+                9 ,25,
                 56
         ));
         GameRegistry.registerTileEntity(LeacherTileEntity.class, new ResourceLocation(NuclearIndustry.MODID, "leacher"));
