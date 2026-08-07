@@ -4,17 +4,15 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
-import org.lwjgl.Sys;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgress & ISettableTank> extends GuiContainer {
+public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgressAndEnergy & ISettableTank> extends GuiContainer {
 
     private final ResourceLocation guiTexture;
     private final T tile;
@@ -24,18 +22,21 @@ public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgress
     private final int arrowDrawX, arrowDrawY;
     private final int arrowSpriteX, arrowSpriteY;
     private final int playerInvYOffset;
+    private final int energyBarPosX,energyBarPosY;
+    private final int energyBarRenderHeight;
 
 
 
     private final Map<Integer, Map.Entry<Integer, Integer>> tankSize;      // <tankID, <height, width>>
     private final Map<Integer, Map.Entry<Integer, Integer>> tankPos;       // <tankID, <x, y>>
 
+
     public BasicMachineGui(InventoryPlayer playerInv, T tile, Map<Integer, Map.Entry<Integer, Integer>> guiSlots,
                            ResourceLocation guiTexture, String containerName, int guiWidth, int guiHeight,
                            boolean drawArrowHorizontally, int arrowHightPx, int arrowWidthPx, int arrowDrawX,
                            int arrowDrawY, int arrowSpriteX, int arrowSpriteY, int playerInvYOffset,
                            Map<Integer, Map.Entry<Integer, Integer>> tankSize,
-                           Map<Integer, Map.Entry<Integer, Integer>> tankPos) {
+                           Map<Integer, Map.Entry<Integer, Integer>> tankPos, int energyBarPosX, int energyBarPosY, int energyBarHeight) {
         super(new BasicMachineContainer<T>(playerInv, tile, guiSlots,playerInvYOffset));
         this.tile = tile;
         this.guiTexture = guiTexture;
@@ -50,6 +51,10 @@ public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgress
         this.playerInvYOffset = playerInvYOffset;
         this.tankSize = tankSize;
         this.tankPos = tankPos;
+        this.energyBarPosX = energyBarPosX;
+        this.energyBarPosY = energyBarPosY;
+        this.energyBarRenderHeight = energyBarHeight;
+
 
         this.xSize = guiWidth;
         this.ySize = guiHeight;
@@ -75,7 +80,6 @@ public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgress
         }
 
 
-
         // ---- fluid tanks ----
         tile.getFluidTanks().forEach((tankID, fluidTank) -> {
             FluidStack fluid = fluidTank.getFluid();
@@ -97,6 +101,34 @@ public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgress
             );
 
         });
+
+
+        // ---- energy bar ----
+        int energyBarHeight= tile.getClientEnergy()*energyBarRenderHeight/ (int) tile.getEnergySink().getCapacity();
+
+        //back gradient
+        drawRect(guiLeft + energyBarPosX - 1,
+                guiTop + energyBarPosY - 1,
+                guiLeft + energyBarPosX + 7,
+                guiTop + energyBarPosY + energyBarRenderHeight + 1,
+                0xFF333333);
+
+        drawGradientRect(guiLeft + energyBarPosX,
+                guiTop + energyBarPosY,
+                guiLeft + energyBarPosX + 6,
+                guiTop + energyBarPosY + energyBarRenderHeight,
+                0xFF444444,
+                0xFF3A3A3A);
+
+        //energy bar
+        drawGradientRect(
+                guiLeft+energyBarPosX,
+                guiTop+energyBarPosY + (energyBarRenderHeight-energyBarHeight),
+                guiLeft+energyBarPosX+6, //6px wide
+                guiTop+energyBarPosY+energyBarRenderHeight,
+                0xFFFF4444, //Top: bright red
+                0xFF880000  //Bottom: dark red
+        );
     }
 
     @Override
@@ -138,6 +170,7 @@ public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgress
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX,mouseY);
     }
+
 
 
 

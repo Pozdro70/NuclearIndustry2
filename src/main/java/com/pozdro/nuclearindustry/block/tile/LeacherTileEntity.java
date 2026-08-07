@@ -2,6 +2,7 @@ package com.pozdro.nuclearindustry.block.tile;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.fluid.ModFluids;
+import ic2.api.energy.prefab.BasicSink;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -20,11 +21,10 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.AbstractMap;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LeacherTileEntity extends TileEntity implements ITickable, IHasInventory,ISettableTank,IHasProgress {
+public class LeacherTileEntity extends TileEntity implements ITickable, IHasInventory,ISettableTank, IHasProgressAndEnergy {
 
     public static final int INVENTORY_SIZE = 7;
 
@@ -90,7 +90,9 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
                 181,
                 15,
                 tankSize,
-                tankPos
+                tankPos,
+                158 ,14,
+                56
         ));
         GameRegistry.registerTileEntity(LeacherTileEntity.class, new ResourceLocation(NuclearIndustry.MODID, "leacher"));
     }
@@ -110,6 +112,45 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
     @Override
     public ItemStackHandler getInventoryHandler() {
         return inventory;
+    }
+
+    public final BasicSink energy = new BasicSink(this,10000,1);
+    private static int clientEnergy;
+
+    @Override
+    public BasicSink getEnergySink() {
+        return energy;
+    }
+
+    @Override
+    public void setClientEnergy(int energy) {
+        clientEnergy=energy;
+    }
+
+    @Override
+    public int getClientEnergy() {
+        return clientEnergy;
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+
+        if(!world.isRemote){energy.onLoad();}
+    }
+
+    @Override
+    public void invalidate() {
+        if(!world.isRemote){energy.invalidate();}
+
+        super.invalidate();
+    }
+
+    @Override
+    public void onChunkUnload() {
+        if(!world.isRemote){energy.onChunkUnload();}
+
+        super.onChunkUnload();
     }
 
     @Override
@@ -149,6 +190,8 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
         compound.setTag("TankOut", tankOutTag);
 
         compound.setInteger("Progress", progress);
+
+        energy.writeToNBT(compound);
         return compound;
     }
 
@@ -163,6 +206,8 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
         tankOut.readFromNBT(compound.getCompoundTag("TankOut"));
 
         progress = compound.getInteger("Progress");
+
+        energy.readFromNBT(compound);
     }
 
     @Override

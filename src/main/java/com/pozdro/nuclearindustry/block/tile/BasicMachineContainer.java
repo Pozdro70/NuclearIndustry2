@@ -18,12 +18,13 @@ import net.minecraftforge.items.SlotItemHandler;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BasicMachineContainer<T extends TileEntity & IHasInventory & IHasProgress & ISettableTank> extends Container {
+public class BasicMachineContainer<T extends TileEntity & IHasInventory & IHasProgressAndEnergy & ISettableTank> extends Container {
 
     private final T tile;
     private int lastProgress=-1;
     private final Map<Integer, FluidStack> lastFluids = new HashMap<>();
     private final int playerInvYOffset;
+    private int lastEnergy=-1;
 
     public BasicMachineContainer(InventoryPlayer playerInv, T tile, Map<Integer ,Map.Entry<Integer,Integer>> guiSlots, int playerInvYOffset){
         this.tile=tile;
@@ -103,14 +104,20 @@ public class BasicMachineContainer<T extends TileEntity & IHasInventory & IHasPr
             }
         }
 
+        int energy = (int) tile.getEnergySink().getEnergyStored();
 
-
+        if(energy != lastEnergy){
+            for (IContainerListener listener : listeners) {
+                listener.sendWindowProperty(this,1,energy);
+            }
+        }
 
     }
 
     @Override
     public void updateProgressBar(int id, int data) {
         if(id==0) tile.setProgress(data);
+        if(id==1) tile.setClientEnergy(data);
     }
 
     @Override
@@ -183,7 +190,12 @@ public class BasicMachineContainer<T extends TileEntity & IHasInventory & IHasPr
             );
 
         }
+
+        int energy = (int) tile.getEnergySink().getEnergyStored();
+        listener.sendWindowProperty(this,1,energy);
     }
+
+
 
 
 

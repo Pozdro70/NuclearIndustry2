@@ -1,6 +1,5 @@
 package com.pozdro.nuclearindustry.block.tile;
 
-import com.pozdro.nuclearindustry.NuclearIndustry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -9,11 +8,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
 import javax.annotation.Nullable;
-import java.util.AbstractMap;
-import java.util.HashMap;
 import java.util.Map;
 
-public class BasicMachineGuiHandler <T extends TileEntity & IHasInventory & IHasProgress & ISettableTank> implements IGuiHandler {
+public class BasicMachineGuiHandler <T extends TileEntity & IHasInventory & IHasProgressAndEnergy & ISettableTank> implements IGuiHandler {
     /*
     private static final Map<Integer, Map.Entry<Integer, Integer>> guiSlots = new HashMap<>();
     static {
@@ -32,6 +29,8 @@ public class BasicMachineGuiHandler <T extends TileEntity & IHasInventory & IHas
     private final int arrowSpriteX, arrowSpriteY;
     private final int guiWitdh, guiHeight;
     private final int playerInvYOffset;
+    private final int energyBarPosX,energyBarPosY;
+    private final int energyBarRenderHeight;
 
 
     private final Map<Integer, Map.Entry<Integer, Integer>> tankSize;      // <tankID, <height, width>>
@@ -41,7 +40,7 @@ public class BasicMachineGuiHandler <T extends TileEntity & IHasInventory & IHas
     public BasicMachineGuiHandler(Map<Integer ,Map.Entry<Integer,Integer>> guiSlots, ResourceLocation guiTexture, Class<T> tile, String containerName,
                                   boolean drawArrowHorizontally, int arrowHightPx, int arrowWidthPx, int arrowDrawX, int arrowDrawY, int arrowSpriteX,
                                   int arrowSpriteY, int guiWitdh, int guiHeight, int playerInvYOffset, Map<Integer, Map.Entry<Integer, Integer>> tankSize,
-                                  Map<Integer, Map.Entry<Integer, Integer>> tankPos){
+                                  Map<Integer, Map.Entry<Integer, Integer>> tankPos,int energyBarPosX, int energyBarPosY, int energyBarRenderHeight){
 
         this.guiSlots = guiSlots;
         this.guiTexture = guiTexture;
@@ -57,6 +56,9 @@ public class BasicMachineGuiHandler <T extends TileEntity & IHasInventory & IHas
         this.guiWitdh = guiWitdh;
         this.guiHeight = guiHeight;
         this.playerInvYOffset = playerInvYOffset;
+        this.energyBarPosX = energyBarPosX;
+        this.energyBarPosY = energyBarPosY;
+        this.energyBarRenderHeight = energyBarRenderHeight;
         this.tankSize = tankSize;
         this.tankPos = tankPos;
     }
@@ -77,6 +79,6 @@ public class BasicMachineGuiHandler <T extends TileEntity & IHasInventory & IHas
         return tile.isInstance(te) ? new BasicMachineGui<T>(player.inventory,(T) tile.cast(te), guiSlots,
                 guiTexture,containerName,
                 guiWitdh,guiHeight,drawArrowHorizontally,arrowHightPx,arrowWidthPx,arrowDrawX,arrowDrawY,arrowSpriteX,arrowSpriteY,playerInvYOffset,
-                tankSize,tankPos) : null;
+                tankSize,tankPos,energyBarPosX,energyBarPosY,energyBarRenderHeight) : null;
     }
 }
