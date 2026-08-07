@@ -6,8 +6,11 @@ public interface IHasProgressAndEnergy {
     int getProgress();
     int getMaxProgress();
     void setProgress(int newProgress);
+    void setMaxProgress(int data);
 
     BasicSink getEnergySink();
     void setClientEnergy(int energy);
     int getClientEnergy();
+
+
 }

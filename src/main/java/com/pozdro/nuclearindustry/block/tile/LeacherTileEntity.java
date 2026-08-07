@@ -2,8 +2,11 @@ package com.pozdro.nuclearindustry.block.tile;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.fluid.ModFluids;
+import com.pozdro.nuclearindustry.recipe.FluidIngredient;
 import com.pozdro.nuclearindustry.recipe.FluidTankMachineRecipe;
+import com.pozdro.nuclearindustry.recipe.ItemIngredient;
 import ic2.api.energy.prefab.BasicSink;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -98,7 +101,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
                 "Leacher",
                 true,
                 26,
-                47,
+                37,
                 65,39,
                 176,0,
                 176,
@@ -114,7 +117,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
 
     private int progress = 0;
-    private final int maxProgress = 100;
+    private int maxProgress = 100;
 
     @Override
     public void dropInventory() {
@@ -168,18 +171,214 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
         super.onChunkUnload();
     }
 
+    private final Random random = new Random();
+
     @Override
     public void update() {
-        if(world.isRemote) return;
-        //logic
+        if (world.isRemote) return;
 
-        tankOut.setFluid(new FluidStack(FluidRegistry.WATER,tankOut.getCapacity()));
-        tankIn.setFluid(new FluidStack(ModFluids.URANIUM_HEXAFLUORIDE,tankIn.getCapacity()));
-        //progress++;
+        if(inventory.getStackInSlot(0).isItemEqual(new ItemStack(Items.WATER_BUCKET,1))){
+            tankIn.fill(new FluidStack(FluidRegistry.WATER,1000),true);
+            inventory.extractItem(0,1,false);
+            inventory.insertItem(1,new ItemStack(Items.BUCKET,1),false);
+        }
 
-        progress=maxProgress;
 
-        //if(progress>=maxProgress){progress=0;}
+        //RECIPE CHECKING
+        boolean anyRecipeMatch = false;
+
+        for (FluidTankMachineRecipe recipe : RECIPES) {
+
+            boolean recipeMatches = true;
+
+            //Check item inputs
+            if (recipe.inputs() != null) {
+                for (ItemIngredient ingredient : recipe.inputs()) {
+
+                    if (ingredient == null) continue;
+
+                    ItemStack stack = inventory.getStackInSlot(ingredient.slot());
+
+                    if (stack.isEmpty()
+                            || !stack.isItemEqual(ingredient.stack())
+                            || stack.getCount() < ingredient.stack().getCount()) {
+
+                        recipeMatches = false;
+                        break;
+                    }
+                }
+            }
+
+
+            //Check fluid inputs
+            if (recipeMatches && recipe.fluidInputs() != null) {
+                for (FluidIngredient ingredient : recipe.fluidInputs()) {
+
+                    if (ingredient == null) continue;
+
+                    FluidTank tank = getTank(ingredient.tankID());
+
+                    if (tank == null
+                            || tank.getFluid() == null
+                            || !tank.getFluid().isFluidEqual(ingredient.stack())
+                            || tank.getFluidAmount() < ingredient.stack().amount) {
+
+                        recipeMatches = false;
+                        break;
+                    }
+                }
+            }
+
+
+            //Check item outputs
+            if (recipeMatches && recipe.outputs() != null) {
+                for (ItemIngredient ingredient : recipe.outputs()) {
+
+                    if (ingredient == null) continue;
+
+                    ItemStack current = inventory.getStackInSlot(ingredient.slot());
+
+                    if (!current.isEmpty()
+                            && (!current.isItemEqual(ingredient.stack())
+                            || current.getCount() + ingredient.stack().getCount() > current.getMaxStackSize())) {
+
+                        recipeMatches = false;
+                        break;
+                    }
+                }
+            }
+
+
+            //Check fluid outputs
+            if (recipeMatches && recipe.fluidOutputs() != null) {
+                for (FluidIngredient ingredient : recipe.fluidOutputs()) {
+
+                    if (ingredient == null) continue;
+
+                    FluidTank tank = getTank(ingredient.tankID());
+
+                    if (tank == null) {
+                        recipeMatches = false;
+                        break;
+                    }
+
+                    FluidStack current = tank.getFluid();
+
+                    if (current != null
+                            && (!current.isFluidEqual(ingredient.stack())
+                            || tank.getFluidAmount() + ingredient.stack().amount > tank.getCapacity())) {
+
+                        recipeMatches = false;
+                        break;
+                    }
+                }
+            }
+
+
+            //Check energy
+            if (recipeMatches && energy.getEnergyStored() < recipe.energyNeeded()) {
+                recipeMatches = false;
+            }
+
+
+            if (recipeMatches) {
+
+                anyRecipeMatch = true;
+
+                maxProgress = recipe.processingTime();
+
+                progress++;
+
+                energy.useEnergy(recipe.energyNeeded() / maxProgress);
+
+
+                if (progress >= maxProgress) {
+
+
+                    //Remove item inputs
+                    if (recipe.inputs() != null) {
+                        for (ItemIngredient ingredient : recipe.inputs()) {
+
+                            if (ingredient == null) continue;
+
+                            inventory.extractItem(
+                                    ingredient.slot(),
+                                    ingredient.stack().getCount(),
+                                    false
+                            );
+                        }
+                    }
+
+
+                    //Remove fluid inputs
+                    if (recipe.fluidInputs() != null) {
+                        for (FluidIngredient ingredient : recipe.fluidInputs()) {
+
+                            if (ingredient == null) continue;
+
+                            FluidTank tank = getTank(ingredient.tankID());
+
+                            if (tank != null) {
+                                tank.drain(
+                                        ingredient.stack().amount,
+                                        true
+                                );
+                            }
+                        }
+                    }
+
+
+                    //Produce item outputs
+                    if (recipe.outputs() != null) {
+                        for (ItemIngredient ingredient : recipe.outputs()) {
+
+                            if (ingredient == null) continue;
+
+                            if (random.nextInt(100) < ingredient.probability()) {
+
+                                inventory.insertItem(
+                                        ingredient.slot(),
+                                        ingredient.stack().copy(),
+                                        false
+                                );
+                            }
+                        }
+                    }
+
+
+                    //Produce fluid outputs
+                    if (recipe.fluidOutputs() != null) {
+                        for (FluidIngredient ingredient : recipe.fluidOutputs()) {
+
+                            if (ingredient == null) continue;
+
+                            if (random.nextInt(100) < ingredient.probability()) {
+
+                                FluidTank tank = getTank(ingredient.tankID());
+
+                                if (tank != null) {
+                                    tank.fill(
+                                            ingredient.stack().copy(),
+                                            true
+                                    );
+                                }
+                            }
+                        }
+                    }
+
+
+                    progress = 0;
+                }
+
+                //Only run one recipe per tick
+                break;
+            }
+        }
+
+
+        if (!anyRecipeMatch) {
+            progress = 0;
+        }
     }
 
     @Override
@@ -234,7 +433,12 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
     @Override
     public void setProgress(int p) { progress = p; }
 
-    /*
+    @Override
+    public void setMaxProgress(int data) {
+        maxProgress=data;
+    }
+
+
     public FluidTank getTank(int tankID) {
         switch (tankID){
             case 0:
@@ -246,7 +450,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
         }
 
     }
-     */
+
 
 
     @Override

@@ -25,11 +25,13 @@ public class BasicMachineContainer<T extends TileEntity & IHasInventory & IHasPr
     private final Map<Integer, FluidStack> lastFluids = new HashMap<>();
     private final int playerInvYOffset;
     private int lastEnergy=-1;
+    private int lastMaxProgress=-1;
 
     public BasicMachineContainer(InventoryPlayer playerInv, T tile, Map<Integer ,Map.Entry<Integer,Integer>> guiSlots, int playerInvYOffset){
         this.tile=tile;
         lastProgress = tile.getProgress(); //we are not always sending first packet
         this.playerInvYOffset = playerInvYOffset;
+        lastMaxProgress = tile.getMaxProgress();
 
         tile.getFluidTanks().forEach((id, tank) -> {
             FluidStack fluid = tank.getFluid();
@@ -61,6 +63,13 @@ public class BasicMachineContainer<T extends TileEntity & IHasInventory & IHasPr
                 listener.sendWindowProperty(this,0,tile.getProgress());
             }
             lastProgress=tile.getProgress();
+        }
+
+        if(tile.getMaxProgress() != lastMaxProgress){
+            for (IContainerListener listener : this.listeners) {
+                listener.sendWindowProperty(this,2,tile.getMaxProgress());
+            }
+            lastMaxProgress=tile.getMaxProgress();
         }
 
         Map<Integer, FluidTank> curTanks = tile.getFluidTanks();
@@ -104,18 +113,19 @@ public class BasicMachineContainer<T extends TileEntity & IHasInventory & IHasPr
 
         int energy = (int) tile.getEnergySink().getEnergyStored();
 
-        if(energy != lastEnergy){
+        if (energy != lastEnergy) {
             for (IContainerListener listener : listeners) {
-                listener.sendWindowProperty(this,1,energy);
+                listener.sendWindowProperty(this, 1, energy);
             }
+            lastEnergy = energy;
         }
-
     }
 
     @Override
     public void updateProgressBar(int id, int data) {
         if(id==0) tile.setProgress(data);
         if(id==1) tile.setClientEnergy(data);
+        if(id==2) tile.setMaxProgress(data);
     }
 
     @Override
@@ -191,6 +201,12 @@ public class BasicMachineContainer<T extends TileEntity & IHasInventory & IHasPr
 
         int energy = (int) tile.getEnergySink().getEnergyStored();
         listener.sendWindowProperty(this,1,energy);
+
+
+        listener.sendWindowProperty(this,2,tile.getMaxProgress());
+
+
+
     }
 
 
