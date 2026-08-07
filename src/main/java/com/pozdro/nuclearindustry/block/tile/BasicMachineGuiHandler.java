@@ -14,7 +14,7 @@ public class BasicMachineGuiHandler <T extends TileEntity & IHasInventory & IHas
     /*
     private static final Map<Integer, Map.Entry<Integer, Integer>> guiSlots = new HashMap<>();
     static {
-        guiSlots.put(0, new AbstractMap.SimpleEntry<>(10, 7));
+        guiSlots.put(0, new AbstractMap.SimpleEntry<>(10, 77));
         guiSlots.put(1, new AbstractMap.SimpleEntry<>(20, 7));
     }
      */

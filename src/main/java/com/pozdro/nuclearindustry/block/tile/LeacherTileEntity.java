@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class LeacherTileEntity extends TileEntity implements ITickable, IHasInventory,ISettableTank, IHasProgressAndEnergy {
 
-    public static final int INVENTORY_SIZE = 7;
+    public static final int INVENTORY_SIZE = 11;
 
     public final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE) {
         @Override
@@ -53,13 +53,19 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
     private static final Map<Integer, Map.Entry<Integer, Integer>> guiSlots = new HashMap<>();
     static {
-        guiSlots.put(0, new AbstractMap.SimpleEntry<>(8, 18));
-        guiSlots.put(1, new AbstractMap.SimpleEntry<>(8, 50));
-        guiSlots.put(2, new AbstractMap.SimpleEntry<>(66, 21));
-        guiSlots.put(3, new AbstractMap.SimpleEntry<>(104, 72));
-        guiSlots.put(4, new AbstractMap.SimpleEntry<>(125, 72));
-        guiSlots.put(5, new AbstractMap.SimpleEntry<>(134, 18));
-        guiSlots.put(6, new AbstractMap.SimpleEntry<>(134, 50));
+        guiSlots.put(0, new AbstractMap.SimpleEntry<>(22, 18));
+        guiSlots.put(1, new AbstractMap.SimpleEntry<>(22, 50));
+        guiSlots.put(2, new AbstractMap.SimpleEntry<>(74, 21));
+        guiSlots.put(3, new AbstractMap.SimpleEntry<>(105, 72));
+        guiSlots.put(4, new AbstractMap.SimpleEntry<>(124, 72));
+        guiSlots.put(5, new AbstractMap.SimpleEntry<>(129, 18));
+        guiSlots.put(6, new AbstractMap.SimpleEntry<>(129, 50));
+
+        //upgrade slots
+        guiSlots.put(7, new AbstractMap.SimpleEntry<>(152, 21));
+        guiSlots.put(8, new AbstractMap.SimpleEntry<>(152, 39));
+        guiSlots.put(9, new AbstractMap.SimpleEntry<>(152, 57));
+        guiSlots.put(10, new AbstractMap.SimpleEntry<>(152, 75));
     }
 
     private static final Map<Integer, Map.Entry<Integer, Integer>> tankSize = new HashMap<>();
@@ -70,8 +76,8 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
     private static final Map<Integer, Map.Entry<Integer, Integer>> tankPos = new HashMap<>();
     static {
-        tankPos.put(0, new AbstractMap.SimpleEntry<>(33, 18));
-        tankPos.put(1, new AbstractMap.SimpleEntry<>(104, 18));
+        tankPos.put(0, new AbstractMap.SimpleEntry<>(47, 18));
+        tankPos.put(1, new AbstractMap.SimpleEntry<>(105, 18));
     }
 
 
@@ -84,14 +90,14 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
                 true,
                 26,
                 47,
-                53,39,
+                65,39,
                 176,0,
                 176,
                 181,
                 15,
                 tankSize,
                 tankPos,
-                158 ,14,
+                9 ,20,
                 56
         ));
         GameRegistry.registerTileEntity(LeacherTileEntity.class, new ResourceLocation(NuclearIndustry.MODID, "leacher"));
