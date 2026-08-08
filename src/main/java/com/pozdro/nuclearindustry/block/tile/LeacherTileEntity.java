@@ -2,13 +2,12 @@ package com.pozdro.nuclearindustry.block.tile;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
-import com.pozdro.nuclearindustry.fluid.ModFluids;
 import com.pozdro.nuclearindustry.recipe.FluidIngredient;
 import com.pozdro.nuclearindustry.recipe.FluidTankMachineRecipe;
 import com.pozdro.nuclearindustry.recipe.ItemIngredient;
 import ic2.api.energy.prefab.BasicSink;
+import ic2.api.upgrade.IUpgradeItem;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,10 +18,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -47,7 +46,53 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
         @Override
         public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-            return super.isItemValid(slot, stack);
+
+            if (slot == 0) {
+                IFluidHandlerItem handler =
+                        stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+                if (handler == null) {
+                    return false;
+                }
+
+                FluidStack fluid = handler.getTankProperties()[0].getContents();
+                return fluid != null && fluid.amount > 0;
+            }
+            if(slot==1||slot==3||slot==4||slot==6){
+                return false;
+            }
+            if(slot==2){
+
+                //TODO: nie działa
+                boolean anyRecipeMatch=false;
+
+                for (FluidTankMachineRecipe r : RECIPES) {
+                    for (ItemIngredient ing : r.inputs()) {
+                        if (ing.stack().isItemEqual(stack)) {
+                            anyRecipeMatch = true;
+                            break;
+                        }
+                    }
+
+                    if (anyRecipeMatch) {
+                        break;
+                    }
+                }
+
+            }
+            if(slot==5){
+                IFluidHandlerItem handler =
+                        stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+
+                return handler == null
+                        || handler.getTankProperties()[0].getContents() == null
+                        || handler.getTankProperties()[0].getContents().amount <= 0;
+            }
+            if(slot==7||slot==8||slot==9||slot==10){
+                return stack.getItem() instanceof IUpgradeItem;
+            }
+
+
+            return true;
         }
     };
 
@@ -183,12 +228,175 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
     @Override
     public void update() {
-        if (world.isRemote) return;
+        if (world.isRemote) {
+            return;
+        }
 
-        if(inventory.getStackInSlot(0).isItemEqual(new ItemStack(Items.WATER_BUCKET,1))){
-            tankIn.fill(new FluidStack(FluidRegistry.WATER,1000),true);
-            inventory.extractItem(0,1,false);
-            inventory.insertItem(1,new ItemStack(Items.BUCKET,1),false);
+
+        ItemStack inputStack = inventory.getStackInSlot(0);
+
+        if (!inputStack.isEmpty()) {
+
+            ItemStack singleInput = inputStack.copy();
+            singleInput.setCount(1);
+
+            IFluidHandlerItem inputHandler =
+                    singleInput.getCapability(
+                            CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY,
+                            null
+                    );
+
+            if (inputHandler != null) {
+
+                FluidStack inputFluid =
+                        inputHandler.drain(Integer.MAX_VALUE, false);
+
+                if (inputFluid != null && inputFluid.amount > 0) {
+
+                    boolean compatible =
+                            tankIn.getFluid() == null ||
+                                    inputFluid.isFluidEqual(tankIn.getFluid());
+
+                    if (compatible) {
+
+                        int accepted =
+                                tankIn.fill(inputFluid, false);
+
+                        if (accepted > 0) {
+
+                            FluidStack drained =
+                                    inputHandler.drain(accepted, false);
+
+                            if (drained != null && drained.amount > 0) {
+
+                                ItemStack containerCopy = singleInput.copy();
+
+                                IFluidHandlerItem realInputHandler =
+                                        containerCopy.getCapability(
+                                                CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY,
+                                                null
+                                        );
+
+                                FluidStack actualDrained =
+                                        realInputHandler.drain(
+                                                drained.amount,
+                                                true
+                                        );
+
+                                if (actualDrained != null &&
+                                        actualDrained.amount > 0) {
+
+                                    ItemStack emptyContainer =
+                                            realInputHandler.getContainer();
+
+                                    ItemStack remainder =
+                                            inventory.insertItem(
+                                                    1,
+                                                    emptyContainer,
+                                                    true
+                                            );
+
+                                    if (remainder.isEmpty()) {
+
+                                        tankIn.fill(
+                                                actualDrained,
+                                                true
+                                        );
+
+                                        inventory.extractItem(
+                                                0,
+                                                1,
+                                                false
+                                        );
+
+                                        inventory.insertItem(
+                                                1,
+                                                emptyContainer,
+                                                false
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        ItemStack outputStack = inventory.getStackInSlot(5);
+
+        if (!outputStack.isEmpty() &&
+                tankOut.getFluid() != null &&
+                tankOut.getFluidAmount() > 0) {
+
+            ItemStack singleOutput = outputStack.copy();
+            singleOutput.setCount(1);
+
+            IFluidHandlerItem outputHandler =
+                    singleOutput.getCapability(
+                            CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY,
+                            null
+                    );
+
+            if (outputHandler != null) {
+
+                FluidStack tankFluid =
+                        tankOut.getFluid().copy();
+
+                int accepted =
+                        outputHandler.fill(
+                                tankFluid,
+                                false
+                        );
+
+                accepted = Math.min(
+                        accepted,
+                        tankOut.getFluidAmount()
+                );
+
+                if (accepted > 0) {
+
+                    FluidStack simulatedFluid =
+                            tankFluid.copy();
+
+                    simulatedFluid.amount = accepted;
+
+                    outputHandler.fill(
+                            simulatedFluid,
+                            true
+                    );
+
+                    ItemStack filledContainer =
+                            outputHandler.getContainer();
+
+
+                    ItemStack remainder =
+                            inventory.insertItem(
+                                    6,
+                                    filledContainer,
+                                    true
+                            );
+
+                    if (remainder.isEmpty()) {
+                        inventory.extractItem(
+                                5,
+                                1,
+                                false
+                        );
+
+                        inventory.insertItem(
+                                6,
+                                filledContainer,
+                                false
+                        );
+
+                        tankOut.drain(
+                                accepted,
+                                true
+                        );
+                    }
+                }
+            }
         }
 
 
