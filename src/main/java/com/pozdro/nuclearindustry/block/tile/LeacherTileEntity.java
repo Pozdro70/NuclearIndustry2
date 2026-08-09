@@ -136,9 +136,6 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
         return super.hasCapability(capability,facing);
     }
 
-
-
-
     public static final List<FluidTankMachineRecipe> RECIPES = new ArrayList<>();
 
     public static final int INVENTORY_SIZE = 11;
@@ -783,7 +780,6 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
         }
 
     }
-
 
 
     @Override
