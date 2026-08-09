@@ -21,10 +21,13 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -33,8 +36,110 @@ import java.util.*;
 
 public class LeacherTileEntity extends TileEntity implements ITickable, IHasInventory, ISettableTank, IHasProgressAndEnergy {
 
-    public static final List<FluidTankMachineRecipe> RECIPES = new ArrayList<>();
+    private IItemHandler getItemHandlerForSide(@Nullable EnumFacing facing) {
+        return new IItemHandler() {
+            @Override
+            public int getSlots() {
+                return inventory.getSlots();
+            }
 
+            @Override
+            public ItemStack getStackInSlot(int slot) {
+                return inventory.getStackInSlot(slot);
+            }
+
+            @Override
+            public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+                if (facing == EnumFacing.UP) {
+                    return inventory.insertItem(2, stack, simulate); //2-input slot
+                }
+                return stack;
+            }
+
+            @Override
+            public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                if (facing != EnumFacing.UP && facing != null) {
+                    ItemStack fromSlot3 = inventory.extractItem(3, amount, simulate);
+                    if (!fromSlot3.isEmpty()) {
+                        return fromSlot3;
+                    }
+                    return inventory.extractItem(4, amount, simulate); //3,4 output slots
+                }
+                return ItemStack.EMPTY;
+            }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return inventory.getSlotLimit(slot);
+            }
+        };
+    }
+
+    private IFluidHandler getFluidHandlerForSide(@Nullable EnumFacing facing) {
+        return new IFluidHandler() {
+            @Override
+            public IFluidTankProperties[] getTankProperties() {
+                // combine both tanks' properties so pipes can see both when querying
+                IFluidTankProperties[] inProps = tankIn.getTankProperties();
+                IFluidTankProperties[] outProps = tankOut.getTankProperties();
+                IFluidTankProperties[] combined = new IFluidTankProperties[inProps.length + outProps.length];
+                System.arraycopy(inProps, 0, combined, 0, inProps.length);
+                System.arraycopy(outProps, 0, combined, inProps.length, outProps.length);
+                return combined;
+            }
+
+            @Override
+            public int fill(FluidStack resource, boolean doFill) {
+                if (facing == null || facing != EnumFacing.DOWN) {
+                    return tankIn.fill(resource, doFill);
+                }
+                return 0;
+            }
+
+            @Override
+            public FluidStack drain(FluidStack resource, boolean doDrain) {
+                if (facing == EnumFacing.DOWN) {
+                    return tankOut.drain(resource, doDrain);
+                }
+                return null;
+            }
+
+            @Override
+            public FluidStack drain(int maxDrain, boolean doDrain) {
+                if (facing == EnumFacing.DOWN) {
+                    return tankIn.drain(maxDrain, doDrain);
+                }
+                return null;
+            }
+        };
+    }
+
+
+    @Override
+    @Nullable
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+        if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandlerForSide(facing));
+        }
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(getFluidHandlerForSide(facing));
+        }
+
+        return super.getCapability(capability, facing);
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+        if(capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return true;
+        if(capability== CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) return true;
+
+        return super.hasCapability(capability,facing);
+    }
+
+
+
+
+    public static final List<FluidTankMachineRecipe> RECIPES = new ArrayList<>();
 
     public static final int INVENTORY_SIZE = 11;
 
@@ -618,14 +723,6 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-        if(capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return true;
-        if(capability== CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) return true;
-
-        return super.hasCapability(capability,facing);
-    }
-
-    @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
 
@@ -709,6 +806,5 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
         return fluidTanks;
     }
-
 
 }

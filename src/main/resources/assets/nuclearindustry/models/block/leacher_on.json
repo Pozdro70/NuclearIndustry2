@@ -3,7 +3,7 @@
   "textures": {
     "front": "nuclearindustry:blocks/te/leacher_front_on",
     "side": "nuclearindustry:blocks/te/backplate",
-    "top": "nuclearindustry:blocks/te/backplate",
+    "top": "nuclearindustry:blocks/te/iteminputplate",
     "bottom": "nuclearindustry:blocks/te/backplate"
   }
 }
