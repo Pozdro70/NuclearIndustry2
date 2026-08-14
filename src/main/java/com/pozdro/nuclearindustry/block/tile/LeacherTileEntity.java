@@ -8,6 +8,7 @@ import com.pozdro.nuclearindustry.recipe.ItemIngredient;
 import ic2.api.energy.prefab.BasicSink;
 import ic2.api.upgrade.IUpgradeItem;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -282,6 +283,11 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
     @Override
     public ItemStackHandler getInventoryHandler() {
         return inventory;
+    }
+
+    @Override
+    public void onBlockActivatedNonRemote(EntityPlayer player) {
+        player.openGui(NuclearIndustry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
     }
 
     public final BasicSink energy = new BasicSink(this,10000,1);
@@ -738,6 +744,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
         energy.writeToNBT(compound);
         return compound;
     }
+
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {

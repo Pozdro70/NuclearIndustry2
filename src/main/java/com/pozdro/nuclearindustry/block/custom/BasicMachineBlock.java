@@ -22,14 +22,13 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class BasicMachineBlock extends Block {
+public class BasicMachineBlock  <T extends TileEntity & IHasInventory> extends Block {
 
     public static final PropertyBool LIT = PropertyBool.create("lit");
     public static final PropertyDirection FACING = BlockHorizontal.FACING;
-    private final Supplier<TileEntity> te;
-    private final int guiID;
+    private final Supplier<T> te;
 
-    public BasicMachineBlock(Material blockMaterialIn, Supplier<TileEntity> te,int guiID) {
+    public BasicMachineBlock(Material blockMaterialIn, Supplier<T> te) {
         super(blockMaterialIn);
 
         this.setDefaultState(this.getBlockState().getBaseState()
@@ -38,7 +37,6 @@ public class BasicMachineBlock extends Block {
         );
 
         this.te = te;
-        this.guiID = guiID;
     }
 
     @Override
@@ -106,7 +104,7 @@ public class BasicMachineBlock extends Block {
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player,
                                     EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
-            player.openGui(NuclearIndustry.instance, guiID, world, pos.getX(), pos.getY(), pos.getZ());
+            te.get().onBlockActivatedNonRemote(player);
         }
         return true;
     }
@@ -127,6 +125,8 @@ public class BasicMachineBlock extends Block {
         TileEntity tileentity = world.getTileEntity(pos);
         return tileentity != null && tileentity.receiveClientEvent(id, param);
     }
+
+
 
 
 }

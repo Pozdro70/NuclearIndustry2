@@ -1,0 +1,9 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "front": "nuclearindustry:blocks/coppercoilside",
+    "side": "nuclearindustry:blocks/coppercoilside",
+    "top": "nuclearindustry:blocks/coppercoilrod",
+    "bottom": "nuclearindustry:blocks/coppercoilrod"
+  }
+}

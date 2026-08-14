@@ -6,7 +6,12 @@ import com.pozdro.nuclearindustry.block.tile.LeacherTileEntity;
 import com.pozdro.nuclearindustry.item.ModCreativeTabs;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockWorldState;
+import net.minecraft.block.state.pattern.BlockPattern;
+import net.minecraft.block.state.pattern.BlockStateMatcher;
+import net.minecraft.block.state.pattern.FactoryBlockPattern;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -16,6 +21,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import com.google.common.base.Predicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +40,21 @@ public class ModBlocks {
         return block;
     }
 
-    public static final Block test=newBlock(new Block(Material.IRON)
-            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "testBlock",1);
+    public static final Block MACHINE_HULL=newBlock(new Block(Material.IRON)
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "machinehull",1);
 
-    public static final Block LEACHER=newBlock(new BasicMachineBlock(Material.IRON, LeacherTileEntity::new,0)
+    public static final Block MACHINE_CASING=newBlock(new Block(Material.IRON)
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "machinecasing",1);
+
+    public static final Block COPPER_COIL=newBlock(new Block(Material.IRON)
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "coppercoil",1);
+
+    public static final Block MACHINE_BLOCK=newBlock(new Block(Material.IRON)
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "machineblock",1);
+
+    public static final Block LEACHER=newBlock(new BasicMachineBlock(Material.IRON, LeacherTileEntity::new)
             .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "leacher",1);
+
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) { //registering ItemBlocks
