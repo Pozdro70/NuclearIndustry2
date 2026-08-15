@@ -1,7 +1,12 @@
-package com.pozdro.nuclearindustry.block.tile;
+package com.pozdro.nuclearindustry.block.tile.tiles;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
+import com.pozdro.nuclearindustry.block.tile.IHasInventory;
+import com.pozdro.nuclearindustry.block.tile.IHasProgressAndEnergy;
+import com.pozdro.nuclearindustry.block.tile.ISettableTank;
+import com.pozdro.nuclearindustry.block.tile.basicte.InventoryHandlerWrapper;
+import com.pozdro.nuclearindustry.block.tile.tankte.TankMachineGuiHandler;
 import com.pozdro.nuclearindustry.recipe.FluidIngredient;
 import com.pozdro.nuclearindustry.recipe.FluidTankMachineRecipe;
 import com.pozdro.nuclearindustry.recipe.ItemIngredient;
@@ -247,7 +252,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
 
     public static void renderGUI(){//FMLInit
-        NetworkRegistry.INSTANCE.registerGuiHandler(NuclearIndustry.instance, new BasicMachineGuiHandler<>(
+        NetworkRegistry.INSTANCE.registerGuiHandler(NuclearIndustry.instance, new TankMachineGuiHandler<>(
                 guiSlots,
                 new ResourceLocation(NuclearIndustry.MODID, "textures/gui/leachergui.png"),
                 LeacherTileEntity.class,
@@ -286,7 +291,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
     }
 
     @Override
-    public void onBlockActivatedNonRemote(EntityPlayer player) {
+    public void onBlockActivatedNonRemote(EntityPlayer player,World world,BlockPos pos) {
         player.openGui(NuclearIndustry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
     }
 

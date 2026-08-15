@@ -2,6 +2,8 @@ package com.pozdro.nuclearindustry.block.tile;
 
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
 
 public interface IHasInventory {
@@ -9,5 +11,5 @@ public interface IHasInventory {
 
     ItemStackHandler getInventoryHandler();
 
-    void onBlockActivatedNonRemote(EntityPlayer player);
+    void onBlockActivatedNonRemote(EntityPlayer player, World world, BlockPos pos);
 }

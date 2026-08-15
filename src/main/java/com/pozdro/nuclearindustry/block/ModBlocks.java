@@ -2,16 +2,11 @@ package com.pozdro.nuclearindustry.block;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
-import com.pozdro.nuclearindustry.block.tile.LeacherTileEntity;
+import com.pozdro.nuclearindustry.block.tile.tiles.LeacherTileEntity;
 import com.pozdro.nuclearindustry.item.ModCreativeTabs;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockWorldState;
-import net.minecraft.block.state.pattern.BlockPattern;
-import net.minecraft.block.state.pattern.BlockStateMatcher;
-import net.minecraft.block.state.pattern.FactoryBlockPattern;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -21,7 +16,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import com.google.common.base.Predicate;
 
 import java.util.ArrayList;
 import java.util.List;

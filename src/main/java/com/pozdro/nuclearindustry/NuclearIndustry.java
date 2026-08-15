@@ -2,11 +2,7 @@ package com.pozdro.nuclearindustry;
 
 
 
-import com.pozdro.nuclearindustry.block.ModBlocks;
-import com.pozdro.nuclearindustry.block.tile.BasicMachineGuiHandler;
-import com.pozdro.nuclearindustry.block.tile.LeacherTileEntity;
-import com.pozdro.nuclearindustry.fluid.ModFluids;
-import com.pozdro.nuclearindustry.item.ModItems;
+import com.pozdro.nuclearindustry.block.tile.tiles.LeacherTileEntity;
 import com.pozdro.nuclearindustry.network.ModPacketHandler;
 import com.pozdro.nuclearindustry.recipe.ModRecipes;
 import net.minecraft.util.ResourceLocation;
@@ -14,9 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

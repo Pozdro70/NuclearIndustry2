@@ -1,5 +1,6 @@
-package com.pozdro.nuclearindustry.block.tile;
+package com.pozdro.nuclearindustry.block.tile.basicte;
 
+import com.pozdro.nuclearindustry.block.tile.*;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -9,11 +10,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgressAndEnergy & ISettableTank> extends GuiContainer {
+public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgressAndEnergy> extends GuiContainer {
 
     private final ResourceLocation guiTexture;
     private final T tile;
@@ -27,17 +27,11 @@ public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgress
     private final int energyBarRenderHeight;
 
 
-
-    private final Map<Integer, Map.Entry<Integer, Integer>> tankSize;      // <tankID, <height, width>>
-    private final Map<Integer, Map.Entry<Integer, Integer>> tankPos;       // <tankID, <x, y>>
-
-
     public BasicMachineGui(InventoryPlayer playerInv, T tile, Map<Integer, Map.Entry<Integer, Integer>> guiSlots,
                            ResourceLocation guiTexture, String containerName, int guiWidth, int guiHeight,
                            boolean drawArrowHorizontally, int arrowHightPx, int arrowWidthPx, int arrowDrawX,
                            int arrowDrawY, int arrowSpriteX, int arrowSpriteY, int playerInvYOffset,
-                           Map<Integer, Map.Entry<Integer, Integer>> tankSize,
-                           Map<Integer, Map.Entry<Integer, Integer>> tankPos, int energyBarPosX, int energyBarPosY, int energyBarHeight) {
+                           int energyBarPosX, int energyBarPosY, int energyBarHeight) {
         super(new BasicMachineContainer<T>(playerInv, tile, guiSlots,playerInvYOffset));
         this.tile = tile;
         this.guiTexture = guiTexture;
@@ -50,8 +44,6 @@ public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgress
         this.arrowSpriteX = arrowSpriteX;
         this.arrowSpriteY = arrowSpriteY;
         this.playerInvYOffset = playerInvYOffset;
-        this.tankSize = tankSize;
-        this.tankPos = tankPos;
         this.energyBarPosX = energyBarPosX;
         this.energyBarPosY = energyBarPosY;
         this.energyBarRenderHeight = energyBarHeight;
@@ -79,29 +71,6 @@ public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgress
             drawTexturedModalRect(guiLeft + arrowDrawX, guiTop + arrowDrawY + fillOffset,
                     arrowSpriteX, arrowSpriteY + fillOffset, arrowHightPx, arrowFill);
         }
-
-
-        // ---- fluid tanks ----
-        tile.getFluidTanks().forEach((tankID, fluidTank) -> {
-            FluidStack fluid = fluidTank.getFluid();
-            if (fluid == null || fluid.amount <= 0) return;
-
-            Map.Entry<Integer, Integer> size = tankSize.get(tankID); // <height, width>
-            Map.Entry<Integer, Integer> pos = tankPos.get(tankID);   // <x, y>
-            int tankHeightPx = size.getKey();
-            int tankWidthPx = size.getValue();
-
-            long capacity = fluidTank.getCapacity();
-            int fillHeight = (int) ((long) tankHeightPx * fluid.amount / capacity);
-            if (fillHeight <= 0) return;
-
-            FluidRenderHelper.drawFluid(
-                    guiLeft + pos.getKey(),
-                    guiTop + pos.getValue() + (tankHeightPx - fillHeight),
-                    tankWidthPx, fillHeight, fluid
-            );
-
-        });
 
 
         // ---- energy bar ----
@@ -148,27 +117,6 @@ public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgress
     @Override
     protected void renderHoveredToolTip(int mouseX, int mouseY) {
         super.renderHoveredToolTip(mouseX, mouseY);
-
-
-        tile.getFluidTanks().forEach((tankID, fluidTank) -> {
-            Map.Entry<Integer, Integer> size = tankSize.get(tankID);
-            Map.Entry<Integer, Integer> pos = tankPos.get(tankID);
-            int left = guiLeft + pos.getKey();
-            int top = guiTop + pos.getValue();
-            int right = left + size.getValue();
-            int bottom = top + size.getKey();
-
-            if (mouseX >= left && mouseX <= right && mouseY >= top && mouseY <= bottom) {
-                List<String> tooltip = new ArrayList<>();
-                FluidStack fluid = fluidTank.getFluid();
-                if (fluid != null) {
-                    tooltip.add(fluid.getLocalizedName() + ": " + fluid.amount + " / " + fluidTank.getCapacity() + " mB");
-                } else {
-                    tooltip.add("Empty: 0 / " + fluidTank.getCapacity() + " mB");
-                }
-                drawHoveringText(tooltip, mouseX, mouseY);
-            }
-        });
 
 
         int x = guiLeft + energyBarPosX;

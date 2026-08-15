@@ -1,4 +1,4 @@
-package com.pozdro.nuclearindustry.block.tile;
+package com.pozdro.nuclearindustry.block.tile.basicte;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -12,7 +12,7 @@ public class InventoryHandlerWrapper implements IInventory {
     private final ItemStackHandler handler;
     private final String containerName;
 
-    public InventoryHandlerWrapper(ItemStackHandler handler,String containerName){
+    public InventoryHandlerWrapper(ItemStackHandler handler, String containerName){
         this.handler=handler;
         this.containerName = containerName;
     }
