@@ -46,8 +46,11 @@ public class ModBlocks {
     public static final Block MACHINE_BLOCK=newBlock(new Block(Material.IRON)
             .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "machineblock",1);
 
-    public static final Block LEACHER=newBlock(new BasicMachineBlock(Material.IRON, LeacherTileEntity::new)
+    public static final Block LEACHER=newBlock(new BasicMachineBlock<>(Material.IRON, LeacherTileEntity::new)
             .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "leacher",1);
+
+    public static final Block GRINDER=newBlock(new BasicMachineBlock<>(Material.IRON,LeacherTileEntity::new)
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "grinder",1);
 
 
     @SubscribeEvent
