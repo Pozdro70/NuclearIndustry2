@@ -1,6 +1,6 @@
 package com.pozdro.nuclearindustry.network;
 
-import com.pozdro.nuclearindustry.block.tile.ISettableTank;
+import com.pozdro.nuclearindustry.tile.ISettableTank;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,9 +15,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class TankSyncPacket implements IMessage {

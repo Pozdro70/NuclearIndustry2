@@ -1,8 +1,9 @@
-package com.pozdro.nuclearindustry.block.tile.tankte;
+package com.pozdro.nuclearindustry.tile.tankte;
 
-import com.pozdro.nuclearindustry.block.tile.IHasInventory;
-import com.pozdro.nuclearindustry.block.tile.IHasProgressAndEnergy;
-import com.pozdro.nuclearindustry.block.tile.ISettableTank;
+import com.pozdro.nuclearindustry.tile.IHasInventory;
+import com.pozdro.nuclearindustry.tile.IHasProgressAndEnergy;
+import com.pozdro.nuclearindustry.tile.ISettableTank;
+import com.pozdro.nuclearindustry.tile.basicte.TileSlot;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -34,12 +35,13 @@ public class TankMachineGui<T extends TileEntity & IHasInventory & IHasProgressA
     private final Map<Integer, Map.Entry<Integer, Integer>> tankPos;       // <tankID, <x, y>>
 
 
-    public TankMachineGui(InventoryPlayer playerInv, T tile, Map<Integer, Map.Entry<Integer, Integer>> guiSlots,
+    public TankMachineGui(InventoryPlayer playerInv, T tile, List<TileSlot> guiSlots,
                           ResourceLocation guiTexture, String containerName, int guiWidth, int guiHeight,
                           boolean drawArrowHorizontally, int arrowHightPx, int arrowWidthPx, int arrowDrawX,
                           int arrowDrawY, int arrowSpriteX, int arrowSpriteY, int playerInvYOffset,
                           Map<Integer, Map.Entry<Integer, Integer>> tankSize,
                           Map<Integer, Map.Entry<Integer, Integer>> tankPos, int energyBarPosX, int energyBarPosY, int energyBarHeight) {
+
         super(new TankMachineContainer<T>(playerInv, tile, guiSlots,playerInvYOffset));
         this.tile = tile;
         this.guiTexture = guiTexture;

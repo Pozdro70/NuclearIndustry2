@@ -2,7 +2,7 @@ package com.pozdro.nuclearindustry.block;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
-import com.pozdro.nuclearindustry.block.tile.tiles.LeacherTileEntity;
+import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
 import com.pozdro.nuclearindustry.item.ModCreativeTabs;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

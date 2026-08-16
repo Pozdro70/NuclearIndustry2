@@ -1,6 +1,7 @@
-package com.pozdro.nuclearindustry.block.tile.basicte;
+package com.pozdro.nuclearindustry.tile.basicte;
 
-import com.pozdro.nuclearindustry.block.tile.*;
+import com.pozdro.nuclearindustry.tile.IHasInventory;
+import com.pozdro.nuclearindustry.tile.IHasProgressAndEnergy;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -9,6 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
 
 public class BasicMachineGuiHandler<T extends TileEntity & IHasInventory & IHasProgressAndEnergy> implements IGuiHandler {
@@ -20,7 +22,7 @@ public class BasicMachineGuiHandler<T extends TileEntity & IHasInventory & IHasP
     }
      */
 
-    Map<Integer ,Map.Entry<Integer,Integer>> guiSlots;
+    List<TileSlot> guiSlots;
     private final ResourceLocation guiTexture;
     private final Class<T> tile;
     private final String containerName;
@@ -34,7 +36,7 @@ public class BasicMachineGuiHandler<T extends TileEntity & IHasInventory & IHasP
     private final int energyBarRenderHeight;
 
 
-    public BasicMachineGuiHandler(Map<Integer ,Map.Entry<Integer,Integer>> guiSlots, ResourceLocation guiTexture, Class<T> tile, String containerName,
+    public BasicMachineGuiHandler(List<TileSlot> guiSlots, ResourceLocation guiTexture, Class<T> tile, String containerName,
                                   boolean drawArrowHorizontally, int arrowHightPx, int arrowWidthPx, int arrowDrawX, int arrowDrawY, int arrowSpriteX,
                                   int arrowSpriteY, int guiWitdh, int guiHeight, int playerInvYOffset,
                                   int energyBarPosX, int energyBarPosY, int energyBarRenderHeight){

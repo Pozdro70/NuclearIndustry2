@@ -1,4 +1,4 @@
-package com.pozdro.nuclearindustry.block.tile.tankte;
+package com.pozdro.nuclearindustry.tile.tankte;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;

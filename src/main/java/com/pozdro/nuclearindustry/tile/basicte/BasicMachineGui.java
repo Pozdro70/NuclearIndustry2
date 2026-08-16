@@ -1,13 +1,13 @@
-package com.pozdro.nuclearindustry.block.tile.basicte;
+package com.pozdro.nuclearindustry.tile.basicte;
 
-import com.pozdro.nuclearindustry.block.tile.*;
+import com.pozdro.nuclearindustry.tile.IHasInventory;
+import com.pozdro.nuclearindustry.tile.IHasProgressAndEnergy;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class BasicMachineGui<T extends TileEntity & IHasInventory & IHasProgress
     private final int energyBarRenderHeight;
 
 
-    public BasicMachineGui(InventoryPlayer playerInv, T tile, Map<Integer, Map.Entry<Integer, Integer>> guiSlots,
+    public BasicMachineGui(InventoryPlayer playerInv, T tile, List<TileSlot> guiSlots,
                            ResourceLocation guiTexture, String containerName, int guiWidth, int guiHeight,
                            boolean drawArrowHorizontally, int arrowHightPx, int arrowWidthPx, int arrowDrawX,
                            int arrowDrawY, int arrowSpriteX, int arrowSpriteY, int playerInvYOffset,

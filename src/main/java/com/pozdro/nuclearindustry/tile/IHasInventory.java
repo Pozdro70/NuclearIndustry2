@@ -1,4 +1,4 @@
-package com.pozdro.nuclearindustry.block.tile;
+package com.pozdro.nuclearindustry.tile;
 
 
 import net.minecraft.entity.player.EntityPlayer;

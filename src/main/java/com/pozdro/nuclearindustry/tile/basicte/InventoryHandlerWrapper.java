@@ -1,4 +1,4 @@
-package com.pozdro.nuclearindustry.block.tile.basicte;
+package com.pozdro.nuclearindustry.tile.basicte;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

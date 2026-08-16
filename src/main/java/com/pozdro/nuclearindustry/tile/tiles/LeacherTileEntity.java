@@ -1,12 +1,14 @@
-package com.pozdro.nuclearindustry.block.tile.tiles;
+package com.pozdro.nuclearindustry.tile.tiles;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
-import com.pozdro.nuclearindustry.block.tile.IHasInventory;
-import com.pozdro.nuclearindustry.block.tile.IHasProgressAndEnergy;
-import com.pozdro.nuclearindustry.block.tile.ISettableTank;
-import com.pozdro.nuclearindustry.block.tile.basicte.InventoryHandlerWrapper;
-import com.pozdro.nuclearindustry.block.tile.tankte.TankMachineGuiHandler;
+import com.pozdro.nuclearindustry.tile.IHasInventory;
+import com.pozdro.nuclearindustry.tile.IHasProgressAndEnergy;
+import com.pozdro.nuclearindustry.tile.ISettableTank;
+import com.pozdro.nuclearindustry.tile.basicte.InventoryHandlerWrapper;
+import com.pozdro.nuclearindustry.tile.basicte.SlotType;
+import com.pozdro.nuclearindustry.tile.basicte.TileSlot;
+import com.pozdro.nuclearindustry.tile.tankte.TankMachineGuiHandler;
 import com.pozdro.nuclearindustry.recipe.FluidIngredient;
 import com.pozdro.nuclearindustry.recipe.FluidTankMachineRecipe;
 import com.pozdro.nuclearindustry.recipe.ItemIngredient;
@@ -221,22 +223,21 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
         }
     };
 
-    private static final Map<Integer, Map.Entry<Integer, Integer>> guiSlots = new HashMap<>();
-    static {
-        guiSlots.put(0, new AbstractMap.SimpleEntry<>(22, 18));
-        guiSlots.put(1, new AbstractMap.SimpleEntry<>(22, 50));
-        guiSlots.put(2, new AbstractMap.SimpleEntry<>(74, 21));
-        guiSlots.put(3, new AbstractMap.SimpleEntry<>(105, 72));
-        guiSlots.put(4, new AbstractMap.SimpleEntry<>(124, 72));
-        guiSlots.put(5, new AbstractMap.SimpleEntry<>(129, 18));
-        guiSlots.put(6, new AbstractMap.SimpleEntry<>(129, 50));
+    private static final List<TileSlot> guiSlots = Arrays.asList(
+            new TileSlot(0, SlotType.INPUT_SLOT,EnumFacing.DOWN,22,18),
+            new TileSlot(1, SlotType.INPUT_SLOT,EnumFacing.DOWN,22,50),
+            new TileSlot(2, SlotType.INPUT_SLOT,EnumFacing.DOWN,74,21),
+            new TileSlot(3, SlotType.INPUT_SLOT,EnumFacing.DOWN,105,72),
+            new TileSlot(4, SlotType.INPUT_SLOT,EnumFacing.DOWN,124,72),
+            new TileSlot(5, SlotType.INPUT_SLOT,EnumFacing.DOWN,129,18),
+            new TileSlot(6, SlotType.INPUT_SLOT,EnumFacing.DOWN,129,50),
 
-        //upgrade slots
-        guiSlots.put(7, new AbstractMap.SimpleEntry<>(152, 21));
-        guiSlots.put(8, new AbstractMap.SimpleEntry<>(152, 39));
-        guiSlots.put(9, new AbstractMap.SimpleEntry<>(152, 57));
-        guiSlots.put(10, new AbstractMap.SimpleEntry<>(152, 75));
-    }
+            //upgrade slots
+            new TileSlot(7, SlotType.INPUT_SLOT,EnumFacing.DOWN,152,21),
+            new TileSlot(8, SlotType.INPUT_SLOT,EnumFacing.DOWN,152,39),
+            new TileSlot(9, SlotType.INPUT_SLOT,EnumFacing.DOWN,152,57),
+            new TileSlot(10, SlotType.INPUT_SLOT,EnumFacing.DOWN,152,75)
+    );
 
     private static final Map<Integer, Map.Entry<Integer, Integer>> tankSize = new HashMap<>();
     static {

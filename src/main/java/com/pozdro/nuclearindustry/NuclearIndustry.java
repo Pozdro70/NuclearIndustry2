@@ -2,7 +2,7 @@ package com.pozdro.nuclearindustry;
 
 
 
-import com.pozdro.nuclearindustry.block.tile.tiles.LeacherTileEntity;
+import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
 import com.pozdro.nuclearindustry.network.ModPacketHandler;
 import com.pozdro.nuclearindustry.recipe.ModRecipes;
 import net.minecraft.util.ResourceLocation;

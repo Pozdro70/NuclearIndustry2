@@ -1,7 +1,7 @@
 package com.pozdro.nuclearindustry.recipe;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
-import com.pozdro.nuclearindustry.block.tile.tiles.LeacherTileEntity;
+import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
 import ic2.api.item.IC2Items;
 import ic2.api.recipe.*;
 import net.minecraft.init.Items;

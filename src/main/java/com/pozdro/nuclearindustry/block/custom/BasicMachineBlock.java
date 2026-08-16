@@ -1,7 +1,6 @@
 package com.pozdro.nuclearindustry.block.custom;
 
-import com.pozdro.nuclearindustry.NuclearIndustry;
-import com.pozdro.nuclearindustry.block.tile.IHasInventory;
+import com.pozdro.nuclearindustry.tile.IHasInventory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
