@@ -39,12 +39,12 @@ public class LeacherTileEntity extends TankTileEntity implements ITickable {
 
     private static final List<TileSlot> guiSlots = Arrays.asList(
             new TileSlot(0, SlotType.FLUID_HANDLER_SLOT,EnumFacing.DOWN,22,18),
-            new TileSlot(1, SlotType.FLUID_HANDLER_SLOT,EnumFacing.DOWN,22,50),
+            new TileSlot(1, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,22,50),
             new TileSlot(2, SlotType.INPUT_SLOT,EnumFacing.DOWN,74,21),
             new TileSlot(3, SlotType.INPUT_SLOT,EnumFacing.DOWN,105,72),
             new TileSlot(4, SlotType.INPUT_SLOT,EnumFacing.DOWN,124,72),
             new TileSlot(5, SlotType.FLUID_HANDLER_SLOT,EnumFacing.DOWN,129,18),
-            new TileSlot(6, SlotType.FLUID_HANDLER_SLOT,EnumFacing.DOWN,129,50),
+            new TileSlot(6, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,129,50),
 
             //upgrade slots
             new TileSlot(7, SlotType.UPGRADE_SLOT,EnumFacing.DOWN,152,21),
@@ -499,14 +499,7 @@ public class LeacherTileEntity extends TankTileEntity implements ITickable {
 
         if (wasRunning != isRunning) {
 
-            IBlockState state = world.getBlockState(pos);
-
-            world.setBlockState(
-                    pos,
-                    world.getBlockState(pos)
-                            .withProperty(BasicMachineBlock.LIT, isRunning),
-                    2
-            );
+            setActiveBlockstate(isRunning);
         }
     }
 }

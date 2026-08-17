@@ -4,7 +4,6 @@ import com.pozdro.nuclearindustry.tile.basicte.BasicMachineGuiHandler;
 import com.pozdro.nuclearindustry.tile.basicte.BasicTileEntity;
 import com.pozdro.nuclearindustry.tile.tankte.TankMachineGuiHandler;
 import com.pozdro.nuclearindustry.tile.tankte.TankTileEntity;
-import com.pozdro.nuclearindustry.tile.tiles._LeacherTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;

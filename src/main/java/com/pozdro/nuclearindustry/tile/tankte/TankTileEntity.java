@@ -1,5 +1,6 @@
 package com.pozdro.nuclearindustry.tile.tankte;
 
+import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
 import com.pozdro.nuclearindustry.recipe.BasicMachineRecipe;
 import com.pozdro.nuclearindustry.recipe.TankMachineRecipe;
 import com.pozdro.nuclearindustry.tile.ISettableTank;
@@ -28,49 +29,98 @@ public  abstract class TankTileEntity extends BasicTileEntity implements ISettab
 
     private List<TankMachineRecipe> frecipes = new ArrayList<>();
 
+    protected EnumFacing rotateSide(EnumFacing side) {
+        if (side == null || world == null) {
+            return side;
+        }
 
-    private IFluidHandler getFluidHandlerForSide(@Nullable EnumFacing side){
+        EnumFacing facing =
+                world.getBlockState(pos).getValue(BasicMachineBlock.FACING);
+
+        if (side == EnumFacing.UP || side == EnumFacing.DOWN) {
+            return side;
+        }
+
+        switch (facing) {
+            case NORTH:
+                return side;
+
+            case EAST:
+                return side.rotateY();
+
+            case SOUTH:
+                return side.getOpposite();
+
+            case WEST:
+                return side.rotateYCCW();
+
+            default:
+                return side;
+        }
+    }
+
+    private IFluidHandler getFluidHandlerForSide(@Nullable EnumFacing side) {
         return new IFluidHandler() {
+
             @Override
             public IFluidTankProperties[] getTankProperties() {
                 for (TileTank tileTank : tanks) {
-                    if(tileTank.getTankType()!=TankType.DISABLED){
-                        if(side==tileTank.getTankInteractionSide()){
-                            return tileTank.getTank().getTankProperties();
-                        }
+
+                    if (tileTank.getTankType() == TankType.DISABLED) {
+                        continue;
+                    }
+
+                    EnumFacing worldSide =
+                            rotateSide(tileTank.getTankInteractionSide());
+
+                    if (side == worldSide) {
+                        return tileTank.getTank().getTankProperties();
                     }
                 }
+
                 return new IFluidTankProperties[0];
             }
 
             @Override
             public int fill(FluidStack resource, boolean doFill) {
-
                 for (TileTank tileTank : tanks) {
-                    if(tileTank.getTankType()!=TankType.DISABLED && tileTank.getTankType()==TankType.INPUT_TANK){
-                        if(side==tileTank.getTankInteractionSide()){
-                            if (tileTank.getTank().canFillFluidType(resource)){
 
-                                return tileTank.getTank().fill(resource,doFill);
-                            }
-                        }
+                    if (tileTank.getTankType() != TankType.INPUT_TANK) {
+                        continue;
+                    }
+
+                    EnumFacing worldSide =
+                            rotateSide(tileTank.getTankInteractionSide());
+
+                    if (side != worldSide) {
+                        continue;
+                    }
+
+                    if (tileTank.getTank().canFillFluidType(resource)) {
+                        return tileTank.getTank().fill(resource, doFill);
                     }
                 }
 
                 return 0;
             }
 
-
             @Nullable
             @Override
             public FluidStack drain(FluidStack resource, boolean doDrain) {
                 for (TileTank tileTank : tanks) {
-                    if(tileTank.getTankType()!=TankType.DISABLED && tileTank.getTankType()==TankType.OUTPUT_TANK){
-                        if(side==tileTank.getTankInteractionSide()){
-                            return tileTank.getTank().drain(resource,doDrain);
 
-                        }
+                    if (tileTank.getTankType() != TankType.OUTPUT_TANK) {
+                        continue;
                     }
+
+                    EnumFacing worldSide =
+                            rotateSide(tileTank.getTankInteractionSide());
+
+                    if (side != worldSide) {
+                        continue;
+                    }
+
+                    return tileTank.getTank().drain(resource, doDrain);
                 }
 
                 return null;
@@ -80,12 +130,19 @@ public  abstract class TankTileEntity extends BasicTileEntity implements ISettab
             @Override
             public FluidStack drain(int maxDrain, boolean doDrain) {
                 for (TileTank tileTank : tanks) {
-                    if(tileTank.getTankType()!=TankType.DISABLED && tileTank.getTankType()==TankType.OUTPUT_TANK){
-                        if(side==tileTank.getTankInteractionSide()){
-                            return tileTank.getTank().drain(maxDrain,doDrain);
 
-                        }
+                    if (tileTank.getTankType() != TankType.OUTPUT_TANK) {
+                        continue;
                     }
+
+                    EnumFacing worldSide =
+                            rotateSide(tileTank.getTankInteractionSide());
+
+                    if (side != worldSide) {
+                        continue;
+                    }
+
+                    return tileTank.getTank().drain(maxDrain, doDrain);
                 }
 
                 return null;
