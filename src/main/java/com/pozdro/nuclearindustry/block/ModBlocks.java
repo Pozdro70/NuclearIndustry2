@@ -2,6 +2,7 @@ package com.pozdro.nuclearindustry.block;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
+import com.pozdro.nuclearindustry.tile.tiles.GrinderTileEntity;
 import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
 import com.pozdro.nuclearindustry.item.ModCreativeTabs;
 import net.minecraft.block.Block;
@@ -49,7 +50,7 @@ public class ModBlocks {
     public static final Block LEACHER=newBlock(new BasicMachineBlock<>(Material.IRON, LeacherTileEntity::new)
             .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "leacher",1);
 
-    public static final Block GRINDER=newBlock(new BasicMachineBlock<>(Material.IRON,LeacherTileEntity::new)
+    public static final Block GRINDER=newBlock(new BasicMachineBlock<>(Material.IRON, GrinderTileEntity::new)
             .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "grinder",1);
 
 

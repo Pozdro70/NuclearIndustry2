@@ -103,8 +103,17 @@ public class BasicMachineBlock  <T extends TileEntity & IHasInventory> extends B
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player,
                                     EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
-            te.get().onBlockActivatedNonRemote(player,world, pos);
+            TileEntity tile = world.getTileEntity(pos);
+
+            if (tile instanceof IHasInventory) {
+                ((IHasInventory) tile).onBlockActivatedNonRemote(
+                        player,
+                        world,
+                        pos
+                );
+            }
         }
+
         return true;
     }
 

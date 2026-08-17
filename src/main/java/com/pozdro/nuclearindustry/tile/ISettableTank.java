@@ -1,20 +1,18 @@
 package com.pozdro.nuclearindustry.tile;
 
 
+import com.pozdro.nuclearindustry.tile.tankte.TileTank;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ISettableTank {
 
-    default void setFluidInTank(FluidStack fluidStack){
-        setFluidInTank(fluidStack,0);
-    };
+    void setFluidsInTanks(List<TileTank> tileTanks);
 
-    void setFluidInTank(FluidStack fluidStack, int tankID);
-
-    Map<Integer, FluidTank> getFluidTanks();
+    List<TileTank> getFluidTanks();
 
 
 

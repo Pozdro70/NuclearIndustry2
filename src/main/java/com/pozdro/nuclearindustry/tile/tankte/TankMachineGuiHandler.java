@@ -36,16 +36,14 @@ public class TankMachineGuiHandler<T extends TileEntity & IHasInventory & IHasPr
     private final int playerInvYOffset;
     private final int energyBarPosX,energyBarPosY;
     private final int energyBarRenderHeight;
-
-
-    private final Map<Integer, Map.Entry<Integer, Integer>> tankSize;      // <tankID, <height, width>>
-    private final Map<Integer, Map.Entry<Integer, Integer>> tankPos;       // <tankID, <x, y>>
+    private final int guiID;
+    List<TileTank> tanks;
 
 
     public TankMachineGuiHandler(List<TileSlot> guiSlots, ResourceLocation guiTexture, Class<T> tile, String containerName,
                                  boolean drawArrowHorizontally, int arrowHightPx, int arrowWidthPx, int arrowDrawX, int arrowDrawY, int arrowSpriteX,
-                                 int arrowSpriteY, int guiWitdh, int guiHeight, int playerInvYOffset, Map<Integer, Map.Entry<Integer, Integer>> tankSize,
-                                 Map<Integer, Map.Entry<Integer, Integer>> tankPos, int energyBarPosX, int energyBarPosY, int energyBarRenderHeight){
+                                 int arrowSpriteY, int guiWitdh, int guiHeight, int playerInvYOffset, int energyBarPosX, int energyBarPosY,
+                                 int energyBarRenderHeight, int guiID,List<TileTank> tanks){
 
         this.guiSlots = guiSlots;
         this.guiTexture = guiTexture;
@@ -64,14 +62,17 @@ public class TankMachineGuiHandler<T extends TileEntity & IHasInventory & IHasPr
         this.energyBarPosX = energyBarPosX;
         this.energyBarPosY = energyBarPosY;
         this.energyBarRenderHeight = energyBarRenderHeight;
-        this.tankSize = tankSize;
-        this.tankPos = tankPos;
+        this.guiID = guiID;
+        this.tanks=tanks;
     }
 
 
     @Nullable
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        if (ID != guiID) {
+            return null;
+        }
         TileEntity te = world.getTileEntity(new BlockPos(x,y,z));
         return tile.isInstance(te) ? new TankMachineContainer<T>(player.inventory, (T) tile.cast(te),guiSlots,playerInvYOffset) : null;
 
@@ -80,10 +81,14 @@ public class TankMachineGuiHandler<T extends TileEntity & IHasInventory & IHasPr
     @Nullable
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        if (ID != guiID) {
+            return null;
+        }
+
         TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
         return tile.isInstance(te) ? new TankMachineGui<T>(player.inventory,(T) tile.cast(te), guiSlots,
                 guiTexture,containerName,
                 guiWitdh,guiHeight,drawArrowHorizontally,arrowHightPx,arrowWidthPx,arrowDrawX,arrowDrawY,arrowSpriteX,arrowSpriteY,playerInvYOffset,
-                tankSize,tankPos,energyBarPosX,energyBarPosY,energyBarRenderHeight) : null;
+                energyBarPosX,energyBarPosY,energyBarRenderHeight,tanks) : null;
     }
 }

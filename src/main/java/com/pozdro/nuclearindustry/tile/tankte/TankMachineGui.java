@@ -28,19 +28,14 @@ public class TankMachineGui<T extends TileEntity & IHasInventory & IHasProgressA
     private final int playerInvYOffset;
     private final int energyBarPosX,energyBarPosY;
     private final int energyBarRenderHeight;
-
-
-
-    private final Map<Integer, Map.Entry<Integer, Integer>> tankSize;      // <tankID, <height, width>>
-    private final Map<Integer, Map.Entry<Integer, Integer>> tankPos;       // <tankID, <x, y>>
+    List<TileTank> tanks;
 
 
     public TankMachineGui(InventoryPlayer playerInv, T tile, List<TileSlot> guiSlots,
                           ResourceLocation guiTexture, String containerName, int guiWidth, int guiHeight,
                           boolean drawArrowHorizontally, int arrowHightPx, int arrowWidthPx, int arrowDrawX,
                           int arrowDrawY, int arrowSpriteX, int arrowSpriteY, int playerInvYOffset,
-                          Map<Integer, Map.Entry<Integer, Integer>> tankSize,
-                          Map<Integer, Map.Entry<Integer, Integer>> tankPos, int energyBarPosX, int energyBarPosY, int energyBarHeight) {
+                          int energyBarPosX, int energyBarPosY, int energyBarHeight,List<TileTank> tanks) {
 
         super(new TankMachineContainer<T>(playerInv, tile, guiSlots,playerInvYOffset));
         this.tile = tile;
@@ -54,12 +49,11 @@ public class TankMachineGui<T extends TileEntity & IHasInventory & IHasProgressA
         this.arrowSpriteX = arrowSpriteX;
         this.arrowSpriteY = arrowSpriteY;
         this.playerInvYOffset = playerInvYOffset;
-        this.tankSize = tankSize;
-        this.tankPos = tankPos;
+
         this.energyBarPosX = energyBarPosX;
         this.energyBarPosY = energyBarPosY;
         this.energyBarRenderHeight = energyBarHeight;
-
+        this.tanks=tanks;
 
         this.xSize = guiWidth;
         this.ySize = guiHeight;
@@ -86,22 +80,20 @@ public class TankMachineGui<T extends TileEntity & IHasInventory & IHasProgressA
 
 
         // ---- fluid tanks ----
-        tile.getFluidTanks().forEach((tankID, fluidTank) -> {
-            FluidStack fluid = fluidTank.getFluid();
+        tile.getFluidTanks().forEach((tileTank) -> {
+            FluidStack fluid = tileTank.getTank().getFluid();
             if (fluid == null || fluid.amount <= 0) return;
 
-            Map.Entry<Integer, Integer> size = tankSize.get(tankID); // <height, width>
-            Map.Entry<Integer, Integer> pos = tankPos.get(tankID);   // <x, y>
-            int tankHeightPx = size.getKey();
-            int tankWidthPx = size.getValue();
+            int tankHeightPx = tileTank.getTankYSize();
+            int tankWidthPx = tileTank.getTankXSize();
 
-            long capacity = fluidTank.getCapacity();
+            long capacity = tileTank.getTank().getCapacity();
             int fillHeight = (int) ((long) tankHeightPx * fluid.amount / capacity);
             if (fillHeight <= 0) return;
 
             FluidRenderHelper.drawFluid(
-                    guiLeft + pos.getKey(),
-                    guiTop + pos.getValue() + (tankHeightPx - fillHeight),
+                    guiLeft + tileTank.getTankX(),
+                    guiTop + tileTank.getTankY() + (tankHeightPx - fillHeight),
                     tankWidthPx, fillHeight, fluid
             );
 
@@ -154,21 +146,20 @@ public class TankMachineGui<T extends TileEntity & IHasInventory & IHasProgressA
         super.renderHoveredToolTip(mouseX, mouseY);
 
 
-        tile.getFluidTanks().forEach((tankID, fluidTank) -> {
-            Map.Entry<Integer, Integer> size = tankSize.get(tankID);
-            Map.Entry<Integer, Integer> pos = tankPos.get(tankID);
-            int left = guiLeft + pos.getKey();
-            int top = guiTop + pos.getValue();
-            int right = left + size.getValue();
-            int bottom = top + size.getKey();
+        tile.getFluidTanks().forEach((tileTank) -> {
+            int left = guiLeft + tileTank.getTankX();
+            int top = guiTop + tileTank.getTankY();
+
+            int right = left + tileTank.getTankYSize();
+            int bottom = top + tileTank.getTankXSize();
 
             if (mouseX >= left && mouseX <= right && mouseY >= top && mouseY <= bottom) {
                 List<String> tooltip = new ArrayList<>();
-                FluidStack fluid = fluidTank.getFluid();
+                FluidStack fluid = tileTank.getTank().getFluid();
                 if (fluid != null) {
-                    tooltip.add(fluid.getLocalizedName() + ": " + fluid.amount + " / " + fluidTank.getCapacity() + " mB");
+                    tooltip.add(fluid.getLocalizedName() + ": " + fluid.amount + " / " + tileTank.getTank().getCapacity() + " mB");
                 } else {
-                    tooltip.add("Empty: 0 / " + fluidTank.getCapacity() + " mB");
+                    tooltip.add("Empty: 0 / " + tileTank.getTank().getCapacity() + " mB");
                 }
                 drawHoveringText(tooltip, mouseX, mouseY);
             }

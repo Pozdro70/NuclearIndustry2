@@ -34,12 +34,13 @@ public class BasicMachineGuiHandler<T extends TileEntity & IHasInventory & IHasP
     private final int playerInvYOffset;
     private final int energyBarPosX,energyBarPosY;
     private final int energyBarRenderHeight;
+    private final int guiID;
 
 
     public BasicMachineGuiHandler(List<TileSlot> guiSlots, ResourceLocation guiTexture, Class<T> tile, String containerName,
                                   boolean drawArrowHorizontally, int arrowHightPx, int arrowWidthPx, int arrowDrawX, int arrowDrawY, int arrowSpriteX,
                                   int arrowSpriteY, int guiWitdh, int guiHeight, int playerInvYOffset,
-                                  int energyBarPosX, int energyBarPosY, int energyBarRenderHeight){
+                                  int energyBarPosX, int energyBarPosY, int energyBarRenderHeight, int guiID){
 
         this.guiSlots = guiSlots;
         this.guiTexture = guiTexture;
@@ -58,12 +59,16 @@ public class BasicMachineGuiHandler<T extends TileEntity & IHasInventory & IHasP
         this.energyBarPosX = energyBarPosX;
         this.energyBarPosY = energyBarPosY;
         this.energyBarRenderHeight = energyBarRenderHeight;
+        this.guiID = guiID;
     }
 
 
     @Nullable
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        if (ID != guiID) {
+            return null;
+        }
         TileEntity te = world.getTileEntity(new BlockPos(x,y,z));
         return tile.isInstance(te) ? new BasicMachineContainer<T>(player.inventory, (T) tile.cast(te),guiSlots,playerInvYOffset) : null;
 
@@ -72,6 +77,9 @@ public class BasicMachineGuiHandler<T extends TileEntity & IHasInventory & IHasP
     @Nullable
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        if (ID != guiID) {
+            return null;
+        }
         TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
         return tile.isInstance(te) ? new BasicMachineGui<T>(player.inventory,(T) tile.cast(te), guiSlots,
                 guiTexture,containerName,

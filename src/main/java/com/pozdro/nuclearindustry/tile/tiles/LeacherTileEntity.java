@@ -12,6 +12,8 @@ import com.pozdro.nuclearindustry.tile.tankte.TankMachineGuiHandler;
 import com.pozdro.nuclearindustry.recipe.FluidIngredient;
 import com.pozdro.nuclearindustry.recipe.FluidTankMachineRecipe;
 import com.pozdro.nuclearindustry.recipe.ItemIngredient;
+import com.pozdro.nuclearindustry.tile.tankte.TankType;
+import com.pozdro.nuclearindustry.tile.tankte.TileTank;
 import ic2.api.energy.prefab.BasicSink;
 import ic2.api.upgrade.IUpgradeItem;
 import net.minecraft.block.state.IBlockState;
@@ -40,6 +42,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class LeacherTileEntity extends TileEntity implements ITickable, IHasInventory, ISettableTank, IHasProgressAndEnergy {
@@ -115,7 +118,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
             @Override
             public FluidStack drain(int maxDrain, boolean doDrain) {
                 if (facing == EnumFacing.DOWN) {
-                    return tankIn.drain(maxDrain, doDrain);
+                    return tankOut.drain(maxDrain, doDrain);
                 }
                 return null;
             }
@@ -223,37 +226,30 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
         }
     };
 
+    List<TileTank> tanks=Arrays.asList(
+            new TileTank(0, TankType.INPUT_TANK,EnumFacing.UP,47,18,48,16,tankIn),
+            new TileTank(1, TankType.OUTPUT_TANK,EnumFacing.DOWN,105,18,48,16,tankOut)
+    );
+
     private static final List<TileSlot> guiSlots = Arrays.asList(
             new TileSlot(0, SlotType.INPUT_SLOT,EnumFacing.DOWN,22,18),
             new TileSlot(1, SlotType.INPUT_SLOT,EnumFacing.DOWN,22,50),
             new TileSlot(2, SlotType.INPUT_SLOT,EnumFacing.DOWN,74,21),
             new TileSlot(3, SlotType.INPUT_SLOT,EnumFacing.DOWN,105,72),
             new TileSlot(4, SlotType.INPUT_SLOT,EnumFacing.DOWN,124,72),
-            new TileSlot(5, SlotType.INPUT_SLOT,EnumFacing.DOWN,129,18),
-            new TileSlot(6, SlotType.INPUT_SLOT,EnumFacing.DOWN,129,50),
+            new TileSlot(5, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,129,18),
+            new TileSlot(6, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,129,50),
 
             //upgrade slots
-            new TileSlot(7, SlotType.INPUT_SLOT,EnumFacing.DOWN,152,21),
-            new TileSlot(8, SlotType.INPUT_SLOT,EnumFacing.DOWN,152,39),
-            new TileSlot(9, SlotType.INPUT_SLOT,EnumFacing.DOWN,152,57),
-            new TileSlot(10, SlotType.INPUT_SLOT,EnumFacing.DOWN,152,75)
+            new TileSlot(7, SlotType.UPGRADE_SLOT,EnumFacing.DOWN,152,21),
+            new TileSlot(8, SlotType.UPGRADE_SLOT,EnumFacing.DOWN,152,39),
+            new TileSlot(9, SlotType.UPGRADE_SLOT,EnumFacing.DOWN,152,57),
+            new TileSlot(10, SlotType.UPGRADE_SLOT,EnumFacing.DOWN,152,75)
     );
 
-    private static final Map<Integer, Map.Entry<Integer, Integer>> tankSize = new HashMap<>();
-    static {
-        tankSize.put(0, new AbstractMap.SimpleEntry<>(48, 16));
-        tankSize.put(1, new AbstractMap.SimpleEntry<>(48, 16));
-    }
 
-    private static final Map<Integer, Map.Entry<Integer, Integer>> tankPos = new HashMap<>();
-    static {
-        tankPos.put(0, new AbstractMap.SimpleEntry<>(47, 18));
-        tankPos.put(1, new AbstractMap.SimpleEntry<>(105, 18));
-    }
-
-
-    public static void renderGUI(){//FMLInit
-        NetworkRegistry.INSTANCE.registerGuiHandler(NuclearIndustry.instance, new TankMachineGuiHandler<>(
+    public TankMachineGuiHandler<LeacherTileEntity> getGuiHandler(){//FMLInit
+        return new TankMachineGuiHandler<>(
                 guiSlots,
                 new ResourceLocation(NuclearIndustry.MODID, "textures/gui/leachergui.png"),
                 LeacherTileEntity.class,
@@ -266,12 +262,11 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
                 176,
                 181,
                 15,
-                tankSize,
-                tankPos,
                 9 ,25,
-                56
-        ));
-        GameRegistry.registerTileEntity(LeacherTileEntity.class, new ResourceLocation(NuclearIndustry.MODID, "leacher"));
+                56,
+                0,
+                tanks
+        );
     }
 
 
@@ -297,7 +292,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
     }
 
     public final BasicSink energy = new BasicSink(this,10000,1);
-    private static int clientEnergy;
+    private int clientEnergy;
 
     @Override
     public BasicSink getEnergySink() {
@@ -796,24 +791,22 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
 
     @Override
-    public void setFluidInTank(FluidStack fluidStack, int tankID) {
-        switch (tankID){
-            case 0:
-                tankIn.setFluid(fluidStack);break;
-            case 1:
-                tankOut.setFluid(fluidStack);break;
+    public void setFluidsInTanks(List<TileTank> tileTanks) {
+        for (TileTank tileTank : tileTanks) {
+            switch (tileTank.getTankID()){
+                case 0:
+                    tankIn.setFluid(tileTank.getTank().getFluid());break;
+                case 1:
+                    tankOut.setFluid(tileTank.getTank().getFluid());break;
 
+            }
         }
+
     }
 
     @Override
-    public Map<Integer, FluidTank> getFluidTanks() {
-        Map<Integer, FluidTank> fluidTanks = new HashMap<>();
-
-        fluidTanks.put(0,tankIn);
-        fluidTanks.put(1,tankOut);
-
-        return fluidTanks;
+    public List<TileTank> getFluidTanks() {
+        return tanks;
     }
 
 }

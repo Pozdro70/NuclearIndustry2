@@ -17,6 +17,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -34,41 +35,43 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
     private String tileName;
     private int guiID;
 
+    private final ItemStackHandler inventory;
 
     protected BasicTileEntity(int slotCount, List<TileSlot> slots, String tileName, int guiID){
         this.slotCount=slotCount;
         this.slots=slots;
         this.tileName = tileName;
         this.guiID = guiID;
-    }
 
-    public final ItemStackHandler inventory = new ItemStackHandler(slotCount){
-        @Override
-        protected void onContentsChanged(int slot) {
-            markDirty();
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-
-            for (TileSlot tileSlot : slots) {
-                if(tileSlot.getSlotType()==SlotType.UPGRADE_SLOT && stack.getItem() instanceof IUpgradeItem) return true;
-                if(tileSlot.getSlotType()==SlotType.DISABLED) return false;
+         inventory = new ItemStackHandler(slotCount){
+            @Override
+            protected void onContentsChanged(int slot) {
+                markDirty();
             }
 
-            for (BasicMachineRecipe recipe : recipes) {
-                for (ItemIngredient input : recipe.inputs()) {
-                    if(input.slot()==slot){
-                        return input.stack().isItemEqual(stack);
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+
+                for (TileSlot tileSlot : slots) {
+                    if(tileSlot.getSlotID()==slot && tileSlot.getSlotType()==SlotType.UPGRADE_SLOT && stack.getItem() instanceof IUpgradeItem) return true;
+                    if(tileSlot.getSlotID()==slot && tileSlot.getSlotType()==SlotType.DISABLED) return true;
+                    if(tileSlot.getSlotID()==slot && tileSlot.getSlotType()==SlotType.INPUT_SLOT) return false;
+                }
+
+                for (BasicMachineRecipe recipe : recipes) {
+                    for (ItemIngredient input : recipe.inputs()) {
+                        if(input.slot()==slot){
+                            return input.stack().isItemEqual(stack);
+                        }
                     }
                 }
+
+                return true;
             }
-
-            return true;
-        }
-
-
     };
+
+
+    }
 
     private IItemHandler getItemHandlerForSide(@Nullable EnumFacing side){
         return new IItemHandler() {
@@ -132,8 +135,6 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
         return super.hasCapability(capability, facing);
     }
 
-    private boolean isRunning=false;
-
     @Override
     public void dropInventory() {
         InventoryHelper.dropInventoryItems(world, pos, new InventoryHandlerWrapper(
@@ -155,7 +156,7 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
 
     public abstract BasicSink getSink();
 
-    private static int clientEnergy;
+    private int clientEnergy;
 
     @Override
     public BasicSink getEnergySink() {
@@ -239,6 +240,6 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
     @Override
     public abstract void setMaxProgress(int data);
 
-
+    public abstract BasicMachineGuiHandler<? extends BasicTileEntity> getGuiHandler();
 
 }
