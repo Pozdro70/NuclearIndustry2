@@ -42,6 +42,32 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
     boolean active;
     private final ItemStackHandler inventory;
 
+    private EnumFacing rotateSide(EnumFacing localSide) {
+        EnumFacing facing =
+                world.getBlockState(pos).getValue(BasicMachineBlock.FACING);
+
+        if (localSide == EnumFacing.UP || localSide == EnumFacing.DOWN) {
+            return localSide;
+        }
+
+        switch (facing) {
+            case NORTH:
+                return localSide;
+
+            case EAST:
+                return localSide.rotateY();
+
+            case SOUTH:
+                return localSide.rotateY().rotateY();
+
+            case WEST:
+                return localSide.rotateYCCW();
+
+            default:
+                return localSide;
+        }
+    }
+
     protected BasicTileEntity(int slotCount, List<TileSlot> slots, String tileName, int guiID){
         this.slotCount=slotCount;
         this.slots=slots;
@@ -115,23 +141,66 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
 
             @Nonnull
             @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                for (TileSlot tileSlot : slots) {
-                    if(tileSlot.getSlotType()==SlotType.INPUT_SLOT && tileSlot.getSlotInteractionSide()==side && side!=null){
-                        if(inventory.isItemValid(tileSlot.getSlotID(),stack))
-                            return inventory.insertItem(tileSlot.getSlotID(),stack,simulate);
-                    }
+            public ItemStack insertItem(
+                    int slot,
+                    @Nonnull ItemStack stack,
+                    boolean simulate) {
+
+                if (slot < 0 || slot >= inventory.getSlots()) {
+                    return stack;
                 }
+
+                for (TileSlot tileSlot : slots) {
+
+                    if (tileSlot.getSlotID() != slot) {
+                        continue;
+                    }
+
+                    if (tileSlot.getSlotType() != SlotType.INPUT_SLOT) {
+                        return stack;
+                    }
+
+                    EnumFacing worldSide =
+                            rotateSide(tileSlot.getSlotInteractionSide());
+
+                    if (worldSide != side) {
+                        return stack;
+                    }
+
+                    return inventory.insertItem(slot, stack, simulate);
+                }
+
                 return stack;
             }
 
             @Nonnull
             @Override
-            public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            public ItemStack extractItem(
+                    int slot,
+                    int amount,
+                    boolean simulate) {
+
                 for (TileSlot tileSlot : slots) {
-                    if(tileSlot.getSlotType()==SlotType.OUTPUT_SLOT && tileSlot.getSlotInteractionSide()==side){
-                        ItemStack fromSlot=inventory.extractItem(tileSlot.getSlotID(),amount,simulate);
-                        if(!fromSlot.isEmpty()) return fromSlot;
+
+                    if (tileSlot.getSlotType() != SlotType.OUTPUT_SLOT) {
+                        continue;
+                    }
+
+                    EnumFacing worldSide =
+                            rotateSide(tileSlot.getSlotInteractionSide());
+
+                    if (worldSide != side) {
+                        continue;
+                    }
+
+                    ItemStack result = inventory.extractItem(
+                            tileSlot.getSlotID(),
+                            amount,
+                            simulate
+                    );
+
+                    if (!result.isEmpty()) {
+                        return result;
                     }
                 }
 
@@ -264,16 +333,17 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
         getSink().readFromNBT(compound);
     }
 
-    public void setActiveBlockstate(boolean state){
-        if(this.active!=state){
+    public void setActiveBlockstate(boolean state) {
+        if (this.active != state) {
+
+            this.active = state;
+
             world.setBlockState(
                     pos,
                     world.getBlockState(pos)
-                            .withProperty(BasicMachineBlock.LIT, active),
+                            .withProperty(BasicMachineBlock.LIT, state),
                     2
             );
-
-            this.active=state;
         }
     }
 

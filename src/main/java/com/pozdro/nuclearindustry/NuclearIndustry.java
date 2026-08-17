@@ -5,7 +5,6 @@ package com.pozdro.nuclearindustry;
 import com.pozdro.nuclearindustry.tile.ModGuiHandler;
 import com.pozdro.nuclearindustry.tile.tiles.GrinderTileEntity;
 import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
-import com.pozdro.nuclearindustry.tile.tiles._LeacherTileEntity;
 import com.pozdro.nuclearindustry.network.ModPacketHandler;
 import com.pozdro.nuclearindustry.recipe.ModRecipes;
 import net.minecraft.util.ResourceLocation;
