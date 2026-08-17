@@ -82,7 +82,7 @@ public class ModRecipes {
     }
 
     public static void addModRecipes() {
-        LeacherTileEntity.RECIPES.add(new FluidTankMachineRecipe(
+        LeacherTileEntity.addRecipe(new TankMachineRecipe(
                 Arrays.asList(
                         new ItemIngredient(2, new ItemStack(Items.STICK, 1), 100)
                 ),

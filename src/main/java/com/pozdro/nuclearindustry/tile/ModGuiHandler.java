@@ -1,10 +1,10 @@
 package com.pozdro.nuclearindustry.tile;
 
-import com.pozdro.nuclearindustry.tile.ISettableTank;
 import com.pozdro.nuclearindustry.tile.basicte.BasicMachineGuiHandler;
 import com.pozdro.nuclearindustry.tile.basicte.BasicTileEntity;
 import com.pozdro.nuclearindustry.tile.tankte.TankMachineGuiHandler;
-import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
+import com.pozdro.nuclearindustry.tile.tankte.TankTileEntity;
+import com.pozdro.nuclearindustry.tile.tiles._LeacherTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -27,6 +27,16 @@ public class ModGuiHandler implements IGuiHandler {
 
         TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
 
+        if (te instanceof TankTileEntity) {
+            TankTileEntity leacherTileEntity = (TankTileEntity) te;
+
+            TankMachineGuiHandler<?> handler = leacherTileEntity.getTankGuiHandler();
+
+            return handler.getServerGuiElement(
+                    ID,player,world,x,y,z
+            );
+        }
+
         if (te instanceof BasicTileEntity) {
             BasicTileEntity tile = (BasicTileEntity) te;
 
@@ -34,17 +44,6 @@ public class ModGuiHandler implements IGuiHandler {
 
             return handler.getServerGuiElement(
                     ID, player, world, x, y, z
-            );
-        }
-
-        // handle tank machines separately
-        if (te instanceof LeacherTileEntity) {
-            LeacherTileEntity leacherTileEntity = (LeacherTileEntity) te;
-
-            TankMachineGuiHandler<?> handler = leacherTileEntity.getGuiHandler();
-
-            return handler.getServerGuiElement(
-                    ID,player,world,x,y,z
             );
         }
 
@@ -63,21 +62,20 @@ public class ModGuiHandler implements IGuiHandler {
 
         TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
 
-        if (te instanceof BasicTileEntity) {
-            BasicTileEntity tile = (BasicTileEntity) te;
+        if (te instanceof TankTileEntity) {
+            TankTileEntity tile = (TankTileEntity) te;
 
-            BasicMachineGuiHandler<?> handler = tile.getGuiHandler();
+            TankMachineGuiHandler<?> handler = tile.getTankGuiHandler();
 
             return handler.getClientGuiElement(
                     ID, player, world, x, y, z
             );
         }
 
-        // handle tank machines separately
-        if (te instanceof LeacherTileEntity) {
-            LeacherTileEntity tile = (LeacherTileEntity) te;
+        if (te instanceof BasicTileEntity) {
+            BasicTileEntity tile = (BasicTileEntity) te;
 
-            TankMachineGuiHandler<?> handler = tile.getGuiHandler();
+            BasicMachineGuiHandler<?> handler = tile.getGuiHandler();
 
             return handler.getClientGuiElement(
                     ID, player, world, x, y, z

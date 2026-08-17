@@ -18,7 +18,7 @@ import java.util.List;
 
 public class GrinderTileEntity extends BasicTileEntity implements ITickable {
 
-    BasicSink sink = new BasicSink(this,10000,1);
+    private final BasicSink sink = new BasicSink(this,10000,1);
 
     static List<TileSlot> guiSlots= Arrays.asList(
         new TileSlot(0, SlotType.INPUT_SLOT, EnumFacing.UP,27,28),

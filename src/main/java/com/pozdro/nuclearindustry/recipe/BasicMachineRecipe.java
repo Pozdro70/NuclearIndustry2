@@ -2,7 +2,7 @@ package com.pozdro.nuclearindustry.recipe;
 
 import java.util.List;
 
-public class BasicMachineRecipe {
+public class BasicMachineRecipe  implements MachineRecipe{
 
     private final List<ItemIngredient> inputs;
     private final List<ItemIngredient> outputs;
@@ -11,9 +11,7 @@ public class BasicMachineRecipe {
 
     public BasicMachineRecipe(
             List<ItemIngredient> inputs,
-            List<FluidIngredient> fluidInputs,
             List<ItemIngredient> outputs,
-            List<FluidIngredient> fluidOutputs,
             double energyNeeded,
             int processingTime) {
 

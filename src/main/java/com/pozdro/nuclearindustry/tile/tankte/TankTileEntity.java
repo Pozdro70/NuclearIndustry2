@@ -1,33 +1,33 @@
 package com.pozdro.nuclearindustry.tile.tankte;
 
+import com.pozdro.nuclearindustry.recipe.BasicMachineRecipe;
+import com.pozdro.nuclearindustry.recipe.TankMachineRecipe;
 import com.pozdro.nuclearindustry.tile.ISettableTank;
 import com.pozdro.nuclearindustry.tile.basicte.BasicMachineGuiHandler;
 import com.pozdro.nuclearindustry.tile.basicte.BasicTileEntity;
 import com.pozdro.nuclearindustry.tile.basicte.TileSlot;
-import ic2.api.energy.prefab.BasicSink;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public  abstract class TankTileEntity extends BasicTileEntity implements ISettableTank {
 
-    protected TankTileEntity(int slotCount, List<TileSlot> slots,List<TileTank> tanks, String tileName, int guiID) {
+    protected TankTileEntity(int slotCount, List<TileSlot> slots, String tileName, int guiID) {
         super(slotCount, slots, tileName, guiID);
-        this.tanks=tanks;
     }
 
-    List<TileTank> tanks;
+    protected List<TileTank> tanks;
+
+    private List<TankMachineRecipe> frecipes = new ArrayList<>();
+
 
     private IFluidHandler getFluidHandlerForSide(@Nullable EnumFacing side){
         return new IFluidHandler() {
@@ -59,6 +59,7 @@ public  abstract class TankTileEntity extends BasicTileEntity implements ISettab
 
                 return 0;
             }
+
 
             @Nullable
             @Override
@@ -146,4 +147,28 @@ public  abstract class TankTileEntity extends BasicTileEntity implements ISettab
     public List<TileTank> getFluidTanks() {
         return tanks;
     }
+
+    public abstract TankMachineGuiHandler<? extends TankTileEntity> getTankGuiHandler();
+
+    @Override
+    public BasicMachineGuiHandler<? extends BasicTileEntity> getGuiHandler() {
+        return null; //to make TannkTiles not yell about this not there
+    }
+
+    @Override
+    public List<TankMachineRecipe> getRecipes() {
+        return frecipes;
+    }
+
+    public void setRecipes(List<TankMachineRecipe> frecipes) {
+        this.frecipes = frecipes;
+
+        recipes.clear();
+
+        for (TankMachineRecipe frecipe : frecipes) {
+            recipes.add(frecipe.getOnlyBasicPart());
+        }
+    }
+
+
 }

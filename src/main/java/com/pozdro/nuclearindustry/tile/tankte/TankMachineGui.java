@@ -150,8 +150,8 @@ public class TankMachineGui<T extends TileEntity & IHasInventory & IHasProgressA
             int left = guiLeft + tileTank.getTankX();
             int top = guiTop + tileTank.getTankY();
 
-            int right = left + tileTank.getTankYSize();
-            int bottom = top + tileTank.getTankXSize();
+            int right = left + tileTank.getTankXSize();
+            int bottom = top + tileTank.getTankYSize();
 
             if (mouseX >= left && mouseX <= right && mouseY >= top && mouseY <= bottom) {
                 List<String> tooltip = new ArrayList<>();

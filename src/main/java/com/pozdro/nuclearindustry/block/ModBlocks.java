@@ -4,6 +4,7 @@ import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
 import com.pozdro.nuclearindustry.tile.tiles.GrinderTileEntity;
 import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
+import com.pozdro.nuclearindustry.tile.tiles._LeacherTileEntity;
 import com.pozdro.nuclearindustry.item.ModCreativeTabs;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

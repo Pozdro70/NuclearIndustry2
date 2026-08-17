@@ -2,243 +2,49 @@ package com.pozdro.nuclearindustry.tile.tiles;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
-import com.pozdro.nuclearindustry.tile.IHasInventory;
-import com.pozdro.nuclearindustry.tile.IHasProgressAndEnergy;
-import com.pozdro.nuclearindustry.tile.ISettableTank;
-import com.pozdro.nuclearindustry.tile.basicte.InventoryHandlerWrapper;
+import com.pozdro.nuclearindustry.recipe.FluidIngredient;
+import com.pozdro.nuclearindustry.recipe.ItemIngredient;
+import com.pozdro.nuclearindustry.recipe.TankMachineRecipe;
 import com.pozdro.nuclearindustry.tile.basicte.SlotType;
 import com.pozdro.nuclearindustry.tile.basicte.TileSlot;
 import com.pozdro.nuclearindustry.tile.tankte.TankMachineGuiHandler;
-import com.pozdro.nuclearindustry.recipe.FluidIngredient;
-import com.pozdro.nuclearindustry.recipe.FluidTankMachineRecipe;
-import com.pozdro.nuclearindustry.recipe.ItemIngredient;
+import com.pozdro.nuclearindustry.tile.tankte.TankTileEntity;
 import com.pozdro.nuclearindustry.tile.tankte.TankType;
 import com.pozdro.nuclearindustry.tile.tankte.TileTank;
 import ic2.api.energy.prefab.BasicSink;
-import ic2.api.upgrade.IUpgradeItem;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.lang.reflect.Array;
 import java.util.*;
 
-public class LeacherTileEntity extends TileEntity implements ITickable, IHasInventory, ISettableTank, IHasProgressAndEnergy {
+public class LeacherTileEntity extends TankTileEntity implements ITickable {
 
-    private IItemHandler getItemHandlerForSide(@Nullable EnumFacing facing) {
-        return new IItemHandler() {
-            @Override
-            public int getSlots() {
-                return inventory.getSlots();
-            }
+    private final BasicSink sink = new BasicSink(this,10000,1);
 
-            @Override
-            public ItemStack getStackInSlot(int slot) {
-                return inventory.getStackInSlot(slot);
-            }
+    private int progress = 0;
+    private int maxProgress = 100;
 
-            @Override
-            public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-                if (facing == EnumFacing.UP) {
-                    return inventory.insertItem(2, stack, simulate); //2-input slot
-                }
-                return stack;
-            }
+    ItemStackHandler inventory;
+    private boolean isRunning=false;
+    private static final List<TankMachineRecipe> RECIPES = new ArrayList<>();
 
-            @Override
-            public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                if (facing != EnumFacing.UP && facing != null) {
-                    ItemStack fromSlot3 = inventory.extractItem(3, amount, simulate);
-                    if (!fromSlot3.isEmpty()) {
-                        return fromSlot3;
-                    }
-                    return inventory.extractItem(4, amount, simulate); //3,4 output slots
-                }
-                return ItemStack.EMPTY;
-            }
-
-            @Override
-            public int getSlotLimit(int slot) {
-                return inventory.getSlotLimit(slot);
-            }
-        };
-    }
-
-    private IFluidHandler getFluidHandlerForSide(@Nullable EnumFacing facing) {
-        return new IFluidHandler() {
-            @Override
-            public IFluidTankProperties[] getTankProperties() {
-                // combine both tanks' properties so pipes can see both when querying
-                IFluidTankProperties[] inProps = tankIn.getTankProperties();
-                IFluidTankProperties[] outProps = tankOut.getTankProperties();
-                IFluidTankProperties[] combined = new IFluidTankProperties[inProps.length + outProps.length];
-                System.arraycopy(inProps, 0, combined, 0, inProps.length);
-                System.arraycopy(outProps, 0, combined, inProps.length, outProps.length);
-                return combined;
-            }
-
-            @Override
-            public int fill(FluidStack resource, boolean doFill) {
-                if (facing == null || facing != EnumFacing.DOWN) {
-                    return tankIn.fill(resource, doFill);
-                }
-                return 0;
-            }
-
-            @Override
-            public FluidStack drain(FluidStack resource, boolean doDrain) {
-                if (facing == EnumFacing.DOWN) {
-                    return tankOut.drain(resource, doDrain);
-                }
-                return null;
-            }
-
-            @Override
-            public FluidStack drain(int maxDrain, boolean doDrain) {
-                if (facing == EnumFacing.DOWN) {
-                    return tankOut.drain(maxDrain, doDrain);
-                }
-                return null;
-            }
-        };
-    }
-
-
-    @Override
-    @Nullable
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-        if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandlerForSide(facing));
-        }
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(getFluidHandlerForSide(facing));
-        }
-
-        return super.getCapability(capability, facing);
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-        if(capability== CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return true;
-        if(capability== CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) return true;
-
-        return super.hasCapability(capability,facing);
-    }
-
-    public static final List<FluidTankMachineRecipe> RECIPES = new ArrayList<>();
-
-    public static final int INVENTORY_SIZE = 11;
-
-    public final ItemStackHandler inventory = new ItemStackHandler(INVENTORY_SIZE) {
-        @Override
-        protected void onContentsChanged(int slot) {
-            markDirty();
-        }
-
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-
-            if (slot == 0) {
-                IFluidHandlerItem handler =
-                        stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-                if (handler == null) {
-                    return false;
-                }
-
-                FluidStack fluid = handler.getTankProperties()[0].getContents();
-                return fluid != null && fluid.amount > 0;
-            }
-            if(slot==1||slot==3||slot==4||slot==6){
-                return false;
-            }
-            if(slot==2){
-
-                //TODO: nie działa
-                boolean anyRecipeMatch=false;
-
-                for (FluidTankMachineRecipe r : RECIPES) {
-                    for (ItemIngredient ing : r.inputs()) {
-                        if (ing.stack().isItemEqual(stack)) {
-                            anyRecipeMatch = true;
-                            break;
-                        }
-                    }
-
-                    if (anyRecipeMatch) {
-                        break;
-                    }
-                }
-
-            }
-            if(slot==5){
-                IFluidHandlerItem handler =
-                        stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-
-                return handler == null
-                        || handler.getTankProperties()[0].getContents() == null
-                        || handler.getTankProperties()[0].getContents().amount <= 0;
-            }
-            if(slot==7||slot==8||slot==9||slot==10){
-                return stack.getItem() instanceof IUpgradeItem;
-            }
-
-
-            return true;
-        }
-    };
-
-    private boolean isRunning = false;
-
-
-    public final FluidTank tankIn = new FluidTank(10000) { //ID = 0
-        @Override
-        protected void onContentsChanged() {
-            markDirty();
-        }
-    };
-
-    public final FluidTank tankOut = new FluidTank(10000) { //ID = 1
-        @Override
-        protected void onContentsChanged() {
-            markDirty();
-        }
-    };
-
-    List<TileTank> tanks=Arrays.asList(
-            new TileTank(0, TankType.INPUT_TANK,EnumFacing.UP,47,18,48,16,tankIn),
-            new TileTank(1, TankType.OUTPUT_TANK,EnumFacing.DOWN,105,18,48,16,tankOut)
-    );
 
     private static final List<TileSlot> guiSlots = Arrays.asList(
-            new TileSlot(0, SlotType.INPUT_SLOT,EnumFacing.DOWN,22,18),
-            new TileSlot(1, SlotType.INPUT_SLOT,EnumFacing.DOWN,22,50),
+            new TileSlot(0, SlotType.FLUID_HANDLER_SLOT,EnumFacing.DOWN,22,18),
+            new TileSlot(1, SlotType.FLUID_HANDLER_SLOT,EnumFacing.DOWN,22,50),
             new TileSlot(2, SlotType.INPUT_SLOT,EnumFacing.DOWN,74,21),
             new TileSlot(3, SlotType.INPUT_SLOT,EnumFacing.DOWN,105,72),
             new TileSlot(4, SlotType.INPUT_SLOT,EnumFacing.DOWN,124,72),
-            new TileSlot(5, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,129,18),
-            new TileSlot(6, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,129,50),
+            new TileSlot(5, SlotType.FLUID_HANDLER_SLOT,EnumFacing.DOWN,129,18),
+            new TileSlot(6, SlotType.FLUID_HANDLER_SLOT,EnumFacing.DOWN,129,50),
 
             //upgrade slots
             new TileSlot(7, SlotType.UPGRADE_SLOT,EnumFacing.DOWN,152,21),
@@ -247,8 +53,25 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
             new TileSlot(10, SlotType.UPGRADE_SLOT,EnumFacing.DOWN,152,75)
     );
 
+    public LeacherTileEntity() {
+        super(guiSlots.toArray().length, guiSlots, "leacher", 0);
+        inventory=getInventoryHandler();
+        setRecipes(new ArrayList<>(RECIPES));
+        tanks= Arrays.asList(
+                new TileTank(0, TankType.INPUT_TANK, EnumFacing.UP,47,18,16,48,new FluidTank(10000){
+                    @Override
+                    protected void onContentsChanged() {markDirty();}
+                }),
 
-    public TankMachineGuiHandler<LeacherTileEntity> getGuiHandler(){//FMLInit
+                new TileTank(1, TankType.OUTPUT_TANK,EnumFacing.DOWN,105,18,16,48,new FluidTank(10000){
+                    @Override
+                    protected void onContentsChanged() {markDirty();}
+                })
+        );
+    }
+
+    @Override
+    public TankMachineGuiHandler<? extends TankTileEntity> getTankGuiHandler() {
         return new TankMachineGuiHandler<>(
                 guiSlots,
                 new ResourceLocation(NuclearIndustry.MODID, "textures/gui/leachergui.png"),
@@ -270,67 +93,33 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
     }
 
 
-    private int progress = 0;
-    private int maxProgress = 100;
-
     @Override
-    public void dropInventory() {
-        InventoryHelper.dropInventoryItems(world, pos, new InventoryHandlerWrapper(
-                inventory,
-                "container.leacher")
-        );
+    public BasicSink getSink() {
+        return sink;
     }
 
     @Override
-    public ItemStackHandler getInventoryHandler() {
-        return inventory;
+    public int getProgress() {
+        return progress;
     }
 
     @Override
-    public void onBlockActivatedNonRemote(EntityPlayer player,World world,BlockPos pos) {
-        player.openGui(NuclearIndustry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
-    }
-
-    public final BasicSink energy = new BasicSink(this,10000,1);
-    private int clientEnergy;
-
-    @Override
-    public BasicSink getEnergySink() {
-        return energy;
+    public void setProgress(int progress) {
+        this.progress=progress;
     }
 
     @Override
-    public void setClientEnergy(int cenergy) {
-        clientEnergy=cenergy;
-        if(clientEnergy>energy.getCapacity()){
-            clientEnergy= (int) energy.getCapacity();
-        }
+    public int getMaxProgress() {
+        return maxProgress;
     }
 
     @Override
-    public int getClientEnergy() {
-        return clientEnergy;
+    public void setMaxProgress(int data) {
+        this.maxProgress=data;
     }
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
-
-        if(!world.isRemote){energy.onLoad();}
-    }
-
-    @Override
-    public void invalidate() {
-        if(!world.isRemote){energy.invalidate();}
-
-        super.invalidate();
-    }
-
-    @Override
-    public void onChunkUnload() {
-        if(!world.isRemote){energy.onChunkUnload();}
-
-        super.onChunkUnload();
+    public static void addRecipe(TankMachineRecipe tankMachineRecipe){
+        RECIPES.add(tankMachineRecipe);
     }
 
     private final Random random = new Random();
@@ -363,13 +152,13 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
                 if (inputFluid != null && inputFluid.amount > 0) {
 
                     boolean compatible =
-                            tankIn.getFluid() == null ||
-                                    inputFluid.isFluidEqual(tankIn.getFluid());
+                            tanks.get(0).getTank().getFluid() == null ||
+                                    inputFluid.isFluidEqual(tanks.get(0).getTank().getFluid());
 
                     if (compatible) {
 
                         int accepted =
-                                tankIn.fill(inputFluid, false);
+                                tanks.get(0).getTank().fill(inputFluid, false);
 
                         if (accepted > 0) {
 
@@ -407,7 +196,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
                                     if (remainder.isEmpty()) {
 
-                                        tankIn.fill(
+                                        tanks.get(0).getTank().fill(
                                                 actualDrained,
                                                 true
                                         );
@@ -435,8 +224,8 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
         ItemStack outputStack = inventory.getStackInSlot(5);
 
         if (!outputStack.isEmpty() &&
-                tankOut.getFluid() != null &&
-                tankOut.getFluidAmount() > 0) {
+                tanks.get(1).getTank().getFluid() != null &&
+                tanks.get(1).getTank().getFluidAmount() > 0) {
 
             ItemStack singleOutput = outputStack.copy();
             singleOutput.setCount(1);
@@ -450,7 +239,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
             if (outputHandler != null) {
 
                 FluidStack tankFluid =
-                        tankOut.getFluid().copy();
+                        tanks.get(1).getTank().getFluid().copy();
 
                 int accepted =
                         outputHandler.fill(
@@ -460,7 +249,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
                 accepted = Math.min(
                         accepted,
-                        tankOut.getFluidAmount()
+                        tanks.get(1).getTank().getFluidAmount()
                 );
 
                 if (accepted > 0) {
@@ -499,7 +288,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
                                 false
                         );
 
-                        tankOut.drain(
+                        tanks.get(1).getTank().drain(
                                 accepted,
                                 true
                         );
@@ -515,7 +304,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
         boolean anyRecipeMatch = false;
 
-        for (FluidTankMachineRecipe recipe : RECIPES) {
+        for (TankMachineRecipe recipe : RECIPES) {
 
             boolean recipeMatches = true;
 
@@ -544,7 +333,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
                     if (ingredient == null) continue;
 
-                    FluidTank tank = getTank(ingredient.tankID());
+                    FluidTank tank = tanks.get(ingredient.tankID()).getTank();
 
                     if (tank == null
                             || tank.getFluid() == null
@@ -583,7 +372,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
                     if (ingredient == null) continue;
 
-                    FluidTank tank = getTank(ingredient.tankID());
+                    FluidTank tank = tanks.get(ingredient.tankID()).getTank();
 
                     if (tank == null) {
                         recipeMatches = false;
@@ -604,7 +393,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
 
             //Check energy
-            if (recipeMatches && energy.getEnergyStored() < recipe.energyNeeded()) {
+            if (recipeMatches && sink.getEnergyStored() < recipe.energyNeeded()) {
                 recipeMatches = false;
             }
 
@@ -617,7 +406,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
                 progress++;
 
-                energy.useEnergy(recipe.energyNeeded() / maxProgress);
+                sink.useEnergy(recipe.energyNeeded() / maxProgress);
 
 
                 if (progress >= maxProgress) {
@@ -644,7 +433,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
                             if (ingredient == null) continue;
 
-                            FluidTank tank = getTank(ingredient.tankID());
+                            FluidTank tank = tanks.get(ingredient.tankID()).getTank();
 
                             if (tank != null) {
                                 tank.drain(
@@ -682,7 +471,7 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
 
                             if (random.nextInt(100) < ingredient.probability()) {
 
-                                FluidTank tank = getTank(ingredient.tankID());
+                                FluidTank tank = tanks.get(ingredient.tankID()).getTank();
 
                                 if (tank != null) {
                                     tank.fill(
@@ -720,93 +509,4 @@ public class LeacherTileEntity extends TileEntity implements ITickable, IHasInve
             );
         }
     }
-
-    @Override
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-        return oldState.getBlock() != newSate.getBlock();
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        super.writeToNBT(compound);
-
-        compound.setTag("Inventory", inventory.serializeNBT());
-
-        NBTTagCompound tankInTag = new NBTTagCompound();
-        tankIn.writeToNBT(tankInTag);
-        compound.setTag("TankIn", tankInTag);
-
-        NBTTagCompound tankOutTag = new NBTTagCompound();
-        tankOut.writeToNBT(tankOutTag);
-        compound.setTag("TankOut", tankOutTag);
-
-        compound.setInteger("Progress", progress);
-
-        energy.writeToNBT(compound);
-        return compound;
-    }
-
-
-    @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
-
-        inventory.deserializeNBT(compound.getCompoundTag("Inventory"));
-
-        tankIn.readFromNBT(compound.getCompoundTag("TankIn"));
-
-        tankOut.readFromNBT(compound.getCompoundTag("TankOut"));
-
-        progress = compound.getInteger("Progress");
-
-        energy.readFromNBT(compound);
-    }
-
-    @Override
-    public int getProgress() { return progress; }
-
-    @Override
-    public int getMaxProgress() { return maxProgress; }
-
-    @Override
-    public void setProgress(int p) { progress = p; }
-
-    @Override
-    public void setMaxProgress(int data) {
-        maxProgress=data;
-    }
-
-
-    public FluidTank getTank(int tankID) {
-        switch (tankID){
-            case 0:
-                return tankIn;
-            case 1:
-                return tankOut;
-            default:
-                return null;
-        }
-
-    }
-
-
-    @Override
-    public void setFluidsInTanks(List<TileTank> tileTanks) {
-        for (TileTank tileTank : tileTanks) {
-            switch (tileTank.getTankID()){
-                case 0:
-                    tankIn.setFluid(tileTank.getTank().getFluid());break;
-                case 1:
-                    tankOut.setFluid(tileTank.getTank().getFluid());break;
-
-            }
-        }
-
-    }
-
-    @Override
-    public List<TileTank> getFluidTanks() {
-        return tanks;
-    }
-
 }

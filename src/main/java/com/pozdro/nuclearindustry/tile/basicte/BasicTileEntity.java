@@ -1,8 +1,11 @@
 package com.pozdro.nuclearindustry.tile.basicte;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
+import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
 import com.pozdro.nuclearindustry.recipe.BasicMachineRecipe;
 import com.pozdro.nuclearindustry.recipe.ItemIngredient;
+import com.pozdro.nuclearindustry.recipe.MachineRecipe;
+import com.pozdro.nuclearindustry.recipe.TankMachineRecipe;
 import com.pozdro.nuclearindustry.tile.IHasInventory;
 import com.pozdro.nuclearindustry.tile.IHasProgressAndEnergy;
 import ic2.api.energy.prefab.BasicSink;
@@ -17,7 +20,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -31,10 +35,11 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
 
     private int slotCount=0;
     List<TileSlot> slots;
-    private List<BasicMachineRecipe> recipes = new ArrayList<>();
+    protected List<BasicMachineRecipe> recipes = new ArrayList<>();
     private String tileName;
     private int guiID;
 
+    boolean active;
     private final ItemStackHandler inventory;
 
     protected BasicTileEntity(int slotCount, List<TileSlot> slots, String tileName, int guiID){
@@ -49,25 +54,47 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
                 markDirty();
             }
 
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+             @Override
+             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
 
-                for (TileSlot tileSlot : slots) {
-                    if(tileSlot.getSlotID()==slot && tileSlot.getSlotType()==SlotType.UPGRADE_SLOT && stack.getItem() instanceof IUpgradeItem) return true;
-                    if(tileSlot.getSlotID()==slot && tileSlot.getSlotType()==SlotType.DISABLED) return true;
-                    if(tileSlot.getSlotID()==slot && tileSlot.getSlotType()==SlotType.INPUT_SLOT) return false;
-                }
+                 for (TileSlot tileSlot : slots) {
 
-                for (BasicMachineRecipe recipe : recipes) {
-                    for (ItemIngredient input : recipe.inputs()) {
-                        if(input.slot()==slot){
-                            return input.stack().isItemEqual(stack);
-                        }
-                    }
-                }
+                     if (tileSlot.getSlotID() != slot) {
+                         continue;
+                     }
 
-                return true;
-            }
+                     if (tileSlot.getSlotType() == SlotType.OUTPUT_SLOT ||
+                             tileSlot.getSlotType() == SlotType.DISABLED) {
+                         return false;
+                     }
+
+                     if(tileSlot.getSlotType()==SlotType.FLUID_HANDLER_SLOT){
+                         IFluidHandlerItem handler =
+                                 stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+                         return handler != null;
+                     }
+
+                     if (tileSlot.getSlotType() == SlotType.UPGRADE_SLOT) {
+                         return stack.getItem() instanceof IUpgradeItem;
+                     }
+
+                     if (tileSlot.getSlotType() == SlotType.INPUT_SLOT) {
+
+                         for (BasicMachineRecipe recipe : recipes) {
+                             for (ItemIngredient input : recipe.inputs()) {
+
+                                 if (input.slot() == slot) {
+                                     return input.stack().isItemEqual(stack);
+                                 }
+                             }
+                         }
+
+                         return false;
+                     }
+                 }
+
+                 return false;
+             }
     };
 
 
@@ -217,6 +244,8 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
 
         compound.setInteger("Progress", getProgress());
 
+        //compound.setDouble("Energy",getSink().getEnergyStored());
+
         getSink().writeToNBT(compound);
         return compound;
     }
@@ -230,8 +259,25 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
 
         setProgress(compound.getInteger("Progress"));
 
+        //getSink().setEnergyStored(compound.getDouble("Energy"));
+
         getSink().readFromNBT(compound);
     }
+
+    public void setActiveBlockstate(boolean state){
+        if(this.active!=state){
+            world.setBlockState(
+                    pos,
+                    world.getBlockState(pos)
+                            .withProperty(BasicMachineBlock.LIT, active),
+                    2
+            );
+
+            this.active=state;
+        }
+    }
+
+    public boolean getActiveBlockstate(){return active;}
 
 
     @Override
@@ -242,4 +288,7 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
 
     public abstract BasicMachineGuiHandler<? extends BasicTileEntity> getGuiHandler();
 
+    public List<? extends MachineRecipe> getRecipes() {
+        return recipes;
+    }
 }
