@@ -84,10 +84,12 @@ dependencies {
     // compileOnly = compile time dependency
     // annotationProcessor = annotation processing dependencies
     // shade = includes dependency in output
-    compileOnly rfg.deobf('net.industrial-craft:industrialcraft-2:2.8.222-ex112:api')
-    runtimeOnly rfg.deobf('net.industrial-craft:industrialcraft-2:2.8.222-ex112')
+    compileOnly 'net.industrial-craft:industrialcraft-2:2.8.222-ex112:api'
+    runtimeOnly 'net.industrial-craft:industrialcraft-2:2.8.222-ex112'
     compileOnly "mezz.jei:jei_1.12.2:4.16.1.302:api"
     runtimeOnly "mezz.jei:jei_1.12.2:4.16.1.302"
+
+    runtimeOnly files('runtimeLibs/Mekanism-1.12.2.jar')
 
     // Transitive dependencies:
     // (Dependencies that your dependency depends on)

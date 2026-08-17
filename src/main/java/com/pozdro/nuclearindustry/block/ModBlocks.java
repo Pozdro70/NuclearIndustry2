@@ -1,11 +1,14 @@
 package com.pozdro.nuclearindustry.block;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
+import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
+import com.pozdro.nuclearindustry.tile.tiles.GrinderTileEntity;
+import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
+import com.pozdro.nuclearindustry.tile.tiles._LeacherTileEntity;
 import com.pozdro.nuclearindustry.item.ModCreativeTabs;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -33,8 +36,24 @@ public class ModBlocks {
         return block;
     }
 
-    public static final Block test=newBlock(new Block(Material.IRON)
-            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "testBlock",1);
+    public static final Block MACHINE_HULL=newBlock(new Block(Material.IRON)
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "machinehull",1);
+
+    public static final Block MACHINE_CASING=newBlock(new Block(Material.IRON)
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "machinecasing",1);
+
+    public static final Block COPPER_COIL=newBlock(new Block(Material.IRON)
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "coppercoil",1);
+
+    public static final Block MACHINE_BLOCK=newBlock(new Block(Material.IRON)
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "machineblock",1);
+
+    public static final Block LEACHER=newBlock(new BasicMachineBlock<>(Material.IRON, LeacherTileEntity::new)
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "leacher",1);
+
+    public static final Block GRINDER=newBlock(new BasicMachineBlock<>(Material.IRON, GrinderTileEntity::new)
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "grinder",1);
+
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) { //registering ItemBlocks
@@ -52,5 +71,7 @@ public class ModBlocks {
         modBlocks.forEach((block)->ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block),0,
                 new ModelResourceLocation(block.getRegistryName(), "inventory")));
     }
+
+
 
 }
