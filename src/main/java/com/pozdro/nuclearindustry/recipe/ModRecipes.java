@@ -1,6 +1,8 @@
 package com.pozdro.nuclearindustry.recipe;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
+import com.pozdro.nuclearindustry.item.ModItems;
+import com.pozdro.nuclearindustry.tile.tiles.GrinderTileEntity;
 import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
 import ic2.api.item.IC2Items;
 import ic2.api.recipe.*;
@@ -84,7 +86,7 @@ public class ModRecipes {
     public static void addModRecipes() {
         LeacherTileEntity.addRecipe(new TankMachineRecipe(
                 Arrays.asList(
-                        new ItemIngredient(2, new ItemStack(Items.STICK, 1), 100)
+                        new ItemIngredient(2, new ItemStack(Items.STICK, 2), 100)
                 ),
                 Arrays.asList(
                         new FluidIngredient(0, new FluidStack(FluidRegistry.WATER, 1000), 100)
@@ -95,6 +97,18 @@ public class ModRecipes {
                 ),
                 1000,
                 600
+        ));
+
+
+        GrinderTileEntity.addRecipe(new BasicMachineRecipe(
+                Arrays.asList(
+                        new ItemIngredient(0,new ItemStack(Items.STICK,2),100)
+                ),
+                Arrays.asList(
+                        new ItemIngredient(3,new ItemStack(ModItems.COPPEROREDUST,1),100)
+                ),
+                1000,
+                300
         ));
     }
 }

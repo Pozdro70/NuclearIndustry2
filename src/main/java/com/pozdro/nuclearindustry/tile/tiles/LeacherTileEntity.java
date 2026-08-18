@@ -40,9 +40,9 @@ public class LeacherTileEntity extends TankTileEntity implements ITickable {
     private static final List<TileSlot> guiSlots = Arrays.asList(
             new TileSlot(0, SlotType.FLUID_HANDLER_SLOT,EnumFacing.DOWN,22,18),
             new TileSlot(1, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,22,50),
-            new TileSlot(2, SlotType.INPUT_SLOT,EnumFacing.DOWN,74,21),
-            new TileSlot(3, SlotType.INPUT_SLOT,EnumFacing.DOWN,105,72),
-            new TileSlot(4, SlotType.INPUT_SLOT,EnumFacing.DOWN,124,72),
+            new TileSlot(2, SlotType.INPUT_SLOT,EnumFacing.UP,74,21),
+            new TileSlot(3, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,105,72),
+            new TileSlot(4, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,124,72),
             new TileSlot(5, SlotType.FLUID_HANDLER_SLOT,EnumFacing.DOWN,129,18),
             new TileSlot(6, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,129,50),
 
@@ -56,7 +56,7 @@ public class LeacherTileEntity extends TankTileEntity implements ITickable {
     public LeacherTileEntity() {
         super(guiSlots.toArray().length, guiSlots, "leacher", 0);
         inventory=getInventoryHandler();
-        setRecipes(new ArrayList<>(RECIPES));
+        setTankMachineRecipes(new ArrayList<>(RECIPES));
         tanks= Arrays.asList(
                 new TileTank(0, TankType.INPUT_TANK, EnumFacing.UP,47,18,16,48,new FluidTank(10000){
                     @Override
