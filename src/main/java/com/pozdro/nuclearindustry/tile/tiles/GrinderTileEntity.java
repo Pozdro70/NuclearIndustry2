@@ -219,6 +219,7 @@ public class GrinderTileEntity extends BasicTileEntity implements ITickable {
                     // First output
                     if (random.nextInt(100) < output.probability()) {
 
+
                         inventory.insertItem(
                                 output.slot(),
                                 output.stack().copy(),

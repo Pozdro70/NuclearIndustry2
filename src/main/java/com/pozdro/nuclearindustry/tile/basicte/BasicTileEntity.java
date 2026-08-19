@@ -110,7 +110,6 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
                              for (ItemIngredient input : recipe.inputs()) {
 
                                  if (input.slot() == slot) {
-                                     System.out.println(input.stack().isItemEqual(stack));
                                      return input.stack().isItemEqual(stack);
                                  }
                              }

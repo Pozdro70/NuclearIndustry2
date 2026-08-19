@@ -61,6 +61,16 @@ public class LeacherTileEntity extends TankTileEntity implements ITickable {
                 new TileTank(0, TankType.INPUT_TANK, EnumFacing.UP,47,18,16,48,new FluidTank(10000){
                     @Override
                     protected void onContentsChanged() {markDirty();}
+
+                    @Override
+                    public boolean canFillFluidType(FluidStack fluid) {
+                        for (TankMachineRecipe tankMachineRecipe : getRecipes()) {
+                            if(fluid.isFluidEqual(tankMachineRecipe.fluidInputs().get(0).stack())){
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
                 }),
 
                 new TileTank(1, TankType.OUTPUT_TANK,EnumFacing.DOWN,105,18,16,48,new FluidTank(10000){
