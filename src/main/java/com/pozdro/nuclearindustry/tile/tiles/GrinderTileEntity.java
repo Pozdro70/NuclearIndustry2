@@ -81,7 +81,7 @@ public class GrinderTileEntity extends BasicTileEntity implements ITickable {
                 GrinderTileEntity.class,
                 "Grinder",
                 true,
-                29,
+                30,
                 71,
                 30,46,
                 176,0,

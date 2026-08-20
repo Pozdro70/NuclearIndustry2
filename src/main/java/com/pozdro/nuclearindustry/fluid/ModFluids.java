@@ -77,6 +77,9 @@ public class ModFluids {
     public static final Fluid COPPER_LEACHATE= newFluid("copper_leachate", 0xFF20AFA0).setDensity(1800).setViscosity(1500);
     public static final BlockFluidClassic COPPER_LEACHATE_BLOCK = newFluidBlock(new BlockFluidClassic(COPPER_LEACHATE, Material.WATER));
 
+    public static final Fluid COPPER_SOLUTION= newFluid("copper_solution", 0xB818B8B0).setDensity(1800).setViscosity(1500);
+    public static final BlockFluidClassic COPPER_SOLUTION_BLOCK = newFluidBlock(new BlockFluidClassic(COPPER_SOLUTION, Material.WATER));
+
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {

@@ -5,6 +5,7 @@ import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
 import com.pozdro.nuclearindustry.tile.tiles.GrinderTileEntity;
 import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
 import com.pozdro.nuclearindustry.item.ModCreativeTabs;
+import com.pozdro.nuclearindustry.tile.tiles.PurifierPressTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -52,6 +53,9 @@ public class ModBlocks {
 
     public static final Block GRINDER=newBlock(new BasicMachineBlock<>(Material.IRON, GrinderTileEntity::new)
             .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "grinder",1);
+
+    public static final Block PURIFIERPRESS=newBlock(new BasicMachineBlock<>(Material.IRON, PurifierPressTileEntity::new)
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "purifierpress",1);
 
 
     @SubscribeEvent

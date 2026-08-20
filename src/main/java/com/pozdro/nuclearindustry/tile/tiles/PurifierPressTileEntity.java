@@ -1,7 +1,6 @@
 package com.pozdro.nuclearindustry.tile.tiles;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
-import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
 import com.pozdro.nuclearindustry.recipe.FluidIngredient;
 import com.pozdro.nuclearindustry.recipe.ItemIngredient;
 import com.pozdro.nuclearindustry.recipe.TankMachineRecipe;
@@ -12,7 +11,6 @@ import com.pozdro.nuclearindustry.tile.tankte.TankTileEntity;
 import com.pozdro.nuclearindustry.tile.tankte.TankType;
 import com.pozdro.nuclearindustry.tile.tankte.TileTank;
 import ic2.api.energy.prefab.BasicSink;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -23,9 +21,12 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.ItemStackHandler;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
-public class LeacherTileEntity extends TankTileEntity implements ITickable {
+public class PurifierPressTileEntity extends TankTileEntity implements ITickable {
 
     private final BasicSink sink = new BasicSink(this,10000,1);
 
@@ -40,21 +41,20 @@ public class LeacherTileEntity extends TankTileEntity implements ITickable {
     private static final List<TileSlot> guiSlots = Arrays.asList(
             new TileSlot(0, SlotType.FLUID_HANDLER_SLOT,EnumFacing.DOWN,22,18),
             new TileSlot(1, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,22,50),
-            new TileSlot(2, SlotType.INPUT_SLOT,EnumFacing.UP,74,21),
-            new TileSlot(3, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,105,72),
-            new TileSlot(4, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,124,72),
-            new TileSlot(5, SlotType.FLUID_HANDLER_SLOT,EnumFacing.DOWN,129,18),
-            new TileSlot(6, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,129,50),
+            new TileSlot(2, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,67,65),
+            new TileSlot(3, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,85,65),
+            new TileSlot(4, SlotType.FLUID_HANDLER_SLOT,EnumFacing.DOWN,129,18),
+            new TileSlot(5, SlotType.OUTPUT_SLOT,EnumFacing.DOWN,129,50),
 
             //upgrade slots
-            new TileSlot(7, SlotType.UPGRADE_SLOT,EnumFacing.DOWN,152,21),
-            new TileSlot(8, SlotType.UPGRADE_SLOT,EnumFacing.DOWN,152,39),
-            new TileSlot(9, SlotType.UPGRADE_SLOT,EnumFacing.DOWN,152,57),
-            new TileSlot(10, SlotType.UPGRADE_SLOT,EnumFacing.DOWN,152,75)
+            new TileSlot(6, SlotType.UPGRADE_SLOT,EnumFacing.DOWN,152,21),
+            new TileSlot(7, SlotType.UPGRADE_SLOT,EnumFacing.DOWN,152,39),
+            new TileSlot(8, SlotType.UPGRADE_SLOT,EnumFacing.DOWN,152,57),
+            new TileSlot(9, SlotType.UPGRADE_SLOT,EnumFacing.DOWN,152,75)
     );
 
-    public LeacherTileEntity() {
-        super(guiSlots.toArray().length, guiSlots, "leacher", 0);
+    public PurifierPressTileEntity() {
+        super(guiSlots.toArray().length, guiSlots, "purifierpress", 2);
         inventory=getInventoryHandler();
         setTankMachineRecipes(new ArrayList<>(RECIPES));
         tanks= Arrays.asList(
@@ -84,20 +84,20 @@ public class LeacherTileEntity extends TankTileEntity implements ITickable {
     public TankMachineGuiHandler<? extends TankTileEntity> getTankGuiHandler() {
         return new TankMachineGuiHandler<>(
                 guiSlots,
-                new ResourceLocation(NuclearIndustry.MODID, "textures/gui/leachergui.png"),
-                LeacherTileEntity.class,
-                "Leacher",
-                true,false,
-                26,
+                new ResourceLocation(NuclearIndustry.MODID, "textures/gui/purifierpressgui.png"),
+                PurifierPressTileEntity.class,
+                "Purifier Press",
+                false,false,
+                57,
                 37,
-                65,39,
+                65,6,
                 176,0,
                 176,
                 181,
                 15,
                 9 ,25,
                 56,
-                0,
+                2,
                 tanks
         );
     }
@@ -231,7 +231,7 @@ public class LeacherTileEntity extends TankTileEntity implements ITickable {
             }
         }
 
-        ItemStack outputStack = inventory.getStackInSlot(5);
+        ItemStack outputStack = inventory.getStackInSlot(4);
 
         if (!outputStack.isEmpty() &&
                 tanks.get(1).getTank().getFluid() != null &&
@@ -280,20 +280,20 @@ public class LeacherTileEntity extends TankTileEntity implements ITickable {
 
                     ItemStack remainder =
                             inventory.insertItem(
-                                    6,
+                                    5,
                                     filledContainer,
                                     true
                             );
 
                     if (remainder.isEmpty()) {
                         inventory.extractItem(
-                                5,
+                                4,
                                 1,
                                 false
                         );
 
                         inventory.insertItem(
-                                6,
+                                5,
                                 filledContainer,
                                 false
                         );
@@ -317,24 +317,6 @@ public class LeacherTileEntity extends TankTileEntity implements ITickable {
         for (TankMachineRecipe recipe : RECIPES) {
 
             boolean recipeMatches = true;
-
-            //Check item inputs
-            if (recipe.inputs() != null) {
-                for (ItemIngredient ingredient : recipe.inputs()) {
-
-                    if (ingredient == null) continue;
-
-                    ItemStack stack = inventory.getStackInSlot(ingredient.slot());
-
-                    if (stack.isEmpty()
-                            || !stack.isItemEqual(ingredient.stack())
-                            || stack.getCount() < ingredient.stack().getCount()) {
-
-                        recipeMatches = false;
-                        break;
-                    }
-                }
-            }
 
 
             //Check fluid inputs
@@ -420,21 +402,6 @@ public class LeacherTileEntity extends TankTileEntity implements ITickable {
 
 
                 if (progress >= maxProgress) {
-
-
-                    //Remove item inputs
-                    if (recipe.inputs() != null) {
-                        for (ItemIngredient ingredient : recipe.inputs()) {
-
-                            if (ingredient == null) continue;
-
-                            inventory.extractItem(
-                                    ingredient.slot(),
-                                    ingredient.stack().getCount(),
-                                    false
-                            );
-                        }
-                    }
 
 
                     //Remove fluid inputs

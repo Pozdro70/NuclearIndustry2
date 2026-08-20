@@ -5,6 +5,7 @@ import com.pozdro.nuclearindustry.fluid.ModFluids;
 import com.pozdro.nuclearindustry.item.ModItems;
 import com.pozdro.nuclearindustry.tile.tiles.GrinderTileEntity;
 import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
+import com.pozdro.nuclearindustry.tile.tiles.PurifierPressTileEntity;
 import ic2.api.item.IC2Items;
 import ic2.api.recipe.*;
 import net.minecraft.init.Items;
@@ -92,12 +93,29 @@ public class ModRecipes {
                 Arrays.asList(
                         new FluidIngredient(0, new FluidStack(ModFluids.SULFURIC_ACID, 500), 100)
                 ),
-                null,
+                Arrays.asList(
+                        new ItemIngredient(4,new ItemStack(IC2Items.getItem("dust","stone").getItem(),1),70)
+                ),
                 Arrays.asList(
                         new FluidIngredient(1, new FluidStack(ModFluids.COPPER_LEACHATE, 800), 100)
                 ),
                 700,
                 400
+        ));
+
+        PurifierPressTileEntity.addRecipe(new TankMachineRecipe(
+                null,
+                Arrays.asList(
+                        new FluidIngredient(0, new FluidStack(ModFluids.COPPER_LEACHATE, 1000), 100)
+                ),
+                Arrays.asList(
+                        new ItemIngredient(2,new ItemStack(IC2Items.getItem("dust","stone").getItem(),1),70)
+                ),
+                Arrays.asList(
+                        new FluidIngredient(1, new FluidStack(ModFluids.COPPER_SOLUTION, 800), 100)
+                ),
+                700,
+                500
         ));
 
 

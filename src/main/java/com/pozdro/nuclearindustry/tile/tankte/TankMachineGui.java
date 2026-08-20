@@ -21,7 +21,7 @@ public class TankMachineGui<T extends TileEntity & IHasInventory & IHasProgressA
     private final ResourceLocation guiTexture;
     private final T tile;
     private final String containerName;
-    private final boolean drawArrowHorizontally;
+    private final boolean drawArrowHorizontally,invertDrawDirection;
     private final int arrowHightPx, arrowWidthPx;
     private final int arrowDrawX, arrowDrawY;
     private final int arrowSpriteX, arrowSpriteY;
@@ -33,15 +33,16 @@ public class TankMachineGui<T extends TileEntity & IHasInventory & IHasProgressA
 
     public TankMachineGui(InventoryPlayer playerInv, T tile, List<TileSlot> guiSlots,
                           ResourceLocation guiTexture, String containerName, int guiWidth, int guiHeight,
-                          boolean drawArrowHorizontally, int arrowHightPx, int arrowWidthPx, int arrowDrawX,
+                          boolean drawArrowHorizontally, boolean invertDrawDirection, int arrowHightPx, int arrowWidthPx, int arrowDrawX,
                           int arrowDrawY, int arrowSpriteX, int arrowSpriteY, int playerInvYOffset,
-                          int energyBarPosX, int energyBarPosY, int energyBarHeight,List<TileTank> tanks) {
+                          int energyBarPosX, int energyBarPosY, int energyBarHeight, List<TileTank> tanks) {
 
         super(new TankMachineContainer<T>(playerInv, tile, guiSlots,playerInvYOffset));
         this.tile = tile;
         this.guiTexture = guiTexture;
         this.containerName = containerName;
         this.drawArrowHorizontally = drawArrowHorizontally;
+        this.invertDrawDirection = invertDrawDirection;
         this.arrowHightPx = arrowHightPx;
         this.arrowWidthPx = arrowWidthPx;
         this.arrowDrawX = arrowDrawX;
@@ -68,14 +69,35 @@ public class TankMachineGui<T extends TileEntity & IHasInventory & IHasProgressA
         // ---- progress arrow ----
         int arrowFill = tile.getMaxProgress() == 0 ? 0
                 : tile.getProgress() * arrowWidthPx / tile.getMaxProgress();
-
         if (drawArrowHorizontally) {
-            drawTexturedModalRect(guiLeft + arrowDrawX, guiTop + arrowDrawY,
-                    arrowSpriteX, arrowSpriteY, arrowFill, arrowHightPx);
+            int fillOffset = 0;
+
+            if (invertDrawDirection)
+                fillOffset = arrowWidthPx - arrowFill;
+
+            drawTexturedModalRect(
+                    guiLeft + arrowDrawX + fillOffset,
+                    guiTop + arrowDrawY,
+                    arrowSpriteX + fillOffset,
+                    arrowSpriteY,
+                    arrowFill,
+                    arrowHightPx
+            );
+
         } else {
-            int fillOffset = arrowWidthPx - arrowFill; // grow upward from the bottom
-            drawTexturedModalRect(guiLeft + arrowDrawX, guiTop + arrowDrawY + fillOffset,
-                    arrowSpriteX, arrowSpriteY + fillOffset, arrowHightPx, arrowFill);
+            int fillOffset = 0;
+
+            if (invertDrawDirection)
+                fillOffset = arrowHightPx - arrowFill;
+
+            drawTexturedModalRect(
+                    guiLeft + arrowDrawX,
+                    guiTop + arrowDrawY + fillOffset,
+                    arrowSpriteX,
+                    arrowSpriteY + fillOffset,
+                    arrowWidthPx,
+                    arrowFill
+            );
         }
 
 

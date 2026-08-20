@@ -7,6 +7,7 @@ import com.pozdro.nuclearindustry.tile.tiles.GrinderTileEntity;
 import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
 import com.pozdro.nuclearindustry.network.ModPacketHandler;
 import com.pozdro.nuclearindustry.recipe.ModRecipes;
+import com.pozdro.nuclearindustry.tile.tiles.PurifierPressTileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -39,6 +40,11 @@ public class NuclearIndustry {
         GameRegistry.registerTileEntity(
                 GrinderTileEntity.class,
                 new ResourceLocation(MODID, "grinder")
+        );
+
+        GameRegistry.registerTileEntity(
+                PurifierPressTileEntity.class,
+                new ResourceLocation(MODID, "purifierpress")
         );
     }
 

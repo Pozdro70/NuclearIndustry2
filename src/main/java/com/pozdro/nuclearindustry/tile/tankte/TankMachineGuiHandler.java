@@ -28,7 +28,7 @@ public class TankMachineGuiHandler<T extends TileEntity & IHasInventory & IHasPr
     private final ResourceLocation guiTexture;
     private final Class<T> tile;
     private final String containerName;
-    private final boolean drawArrowHorizontally;
+    private final boolean drawArrowHorizontally,invertDrawDirection;
     private final int arrowHightPx, arrowWidthPx;
     private final int arrowDrawX, arrowDrawY;
     private final int arrowSpriteX, arrowSpriteY;
@@ -41,15 +41,16 @@ public class TankMachineGuiHandler<T extends TileEntity & IHasInventory & IHasPr
 
 
     public TankMachineGuiHandler(List<TileSlot> guiSlots, ResourceLocation guiTexture, Class<T> tile, String containerName,
-                                 boolean drawArrowHorizontally, int arrowHightPx, int arrowWidthPx, int arrowDrawX, int arrowDrawY, int arrowSpriteX,
+                                 boolean drawArrowHorizontally, boolean invertDrawDirection, int arrowHightPx, int arrowWidthPx, int arrowDrawX, int arrowDrawY, int arrowSpriteX,
                                  int arrowSpriteY, int guiWitdh, int guiHeight, int playerInvYOffset, int energyBarPosX, int energyBarPosY,
-                                 int energyBarRenderHeight, int guiID,List<TileTank> tanks){
+                                 int energyBarRenderHeight, int guiID, List<TileTank> tanks){
 
         this.guiSlots = guiSlots;
         this.guiTexture = guiTexture;
         this.tile = tile;
         this.containerName = containerName;
         this.drawArrowHorizontally = drawArrowHorizontally;
+        this.invertDrawDirection = invertDrawDirection;
         this.arrowHightPx = arrowHightPx;
         this.arrowWidthPx = arrowWidthPx;
         this.arrowDrawX = arrowDrawX;
@@ -88,7 +89,7 @@ public class TankMachineGuiHandler<T extends TileEntity & IHasInventory & IHasPr
         TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
         return tile.isInstance(te) ? new TankMachineGui<T>(player.inventory,(T) tile.cast(te), guiSlots,
                 guiTexture,containerName,
-                guiWitdh,guiHeight,drawArrowHorizontally,arrowHightPx,arrowWidthPx,arrowDrawX,arrowDrawY,arrowSpriteX,arrowSpriteY,playerInvYOffset,
+                guiWitdh,guiHeight,drawArrowHorizontally,invertDrawDirection,arrowHightPx,arrowWidthPx,arrowDrawX,arrowDrawY,arrowSpriteX,arrowSpriteY,playerInvYOffset,
                 energyBarPosX,energyBarPosY,energyBarRenderHeight,tanks) : null;
     }
 }
