@@ -17,6 +17,7 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public  abstract class TankTileEntity extends BasicTileEntity implements ISettableTank {
@@ -217,15 +218,20 @@ public  abstract class TankTileEntity extends BasicTileEntity implements ISettab
         return frecipes;
     }
 
-    public void setRecipes(List<TankMachineRecipe> frecipes) {
+    public void setTankMachineRecipes(List<TankMachineRecipe> frecipes) {
         this.frecipes = frecipes;
 
-        recipes.clear();
 
-        for (TankMachineRecipe frecipe : frecipes) {
-            recipes.add(frecipe.getOnlyBasicPart());
-        }
     }
 
+    @Override
+    protected List<BasicMachineRecipe> getRecipeList() {
 
+        List<BasicMachineRecipe> brecipe=new ArrayList<>();
+        for (TankMachineRecipe frecipe : frecipes) {
+            brecipe.add(frecipe.getOnlyBasicPart());
+        }
+
+        return brecipe;
+    }
 }

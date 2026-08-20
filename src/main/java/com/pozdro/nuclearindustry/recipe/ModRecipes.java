@@ -1,7 +1,11 @@
 package com.pozdro.nuclearindustry.recipe;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
+import com.pozdro.nuclearindustry.fluid.ModFluids;
+import com.pozdro.nuclearindustry.item.ModItems;
+import com.pozdro.nuclearindustry.tile.tiles.GrinderTileEntity;
 import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
+import com.pozdro.nuclearindustry.tile.tiles.PurifierPressTileEntity;
 import ic2.api.item.IC2Items;
 import ic2.api.recipe.*;
 import net.minecraft.init.Items;
@@ -84,17 +88,119 @@ public class ModRecipes {
     public static void addModRecipes() {
         LeacherTileEntity.addRecipe(new TankMachineRecipe(
                 Arrays.asList(
-                        new ItemIngredient(2, new ItemStack(Items.STICK, 1), 100)
+                        new ItemIngredient(2, new ItemStack(ModItems.COPPEROREDUST, 2), 100)
                 ),
                 Arrays.asList(
-                        new FluidIngredient(0, new FluidStack(FluidRegistry.WATER, 1000), 100)
+                        new FluidIngredient(0, new FluidStack(ModFluids.SULFURIC_ACID, 500), 100)
                 ),
+                Arrays.asList(
+                        new ItemIngredient(4,new ItemStack(IC2Items.getItem("dust","stone").getItem(),1),70)
+                ),
+                Arrays.asList(
+                        new FluidIngredient(1, new FluidStack(ModFluids.COPPER_LEACHATE, 800), 100)
+                ),
+                700,
+                400
+        ));
+
+        PurifierPressTileEntity.addRecipe(new TankMachineRecipe(
                 null,
                 Arrays.asList(
-                        new FluidIngredient(1, new FluidStack(FluidRegistry.LAVA, 500), 100)
+                        new FluidIngredient(0, new FluidStack(ModFluids.COPPER_LEACHATE, 1000), 100)
                 ),
-                1000,
-                600
+                Arrays.asList(
+                        new ItemIngredient(2,new ItemStack(IC2Items.getItem("dust","stone").getItem(),1),70)
+                ),
+                Arrays.asList(
+                        new FluidIngredient(1, new FluidStack(ModFluids.COPPER_SOLUTION, 800), 100)
+                ),
+                700,
+                500
+        ));
+
+
+        GrinderTileEntity.addRecipe(new BasicMachineRecipe(
+                Arrays.asList(
+                        new ItemIngredient(0,new ItemStack(IC2Items.getItem("crushed","copper").getItem(),1),100)
+                ),
+                Arrays.asList(
+                        new ItemIngredient(3,new ItemStack(ModItems.COPPEROREDUST,1),100),
+                        new ItemIngredient(4,new ItemStack(ModItems.COPPEROREDUST,1),50)
+                ),
+                600,
+                100
+        ));
+
+        GrinderTileEntity.addRecipe(new BasicMachineRecipe(
+                Arrays.asList(
+                        new ItemIngredient(0,new ItemStack(IC2Items.getItem("crushed","gold").getItem(),1),100)
+                ),
+                Arrays.asList(
+                        new ItemIngredient(3,new ItemStack(ModItems.GOLDOREDUST,1),100),
+                        new ItemIngredient(3,new ItemStack(ModItems.GOLDOREDUST,1),50)
+                ),
+                600,
+                100
+        ));
+
+        GrinderTileEntity.addRecipe(new BasicMachineRecipe(
+                Arrays.asList(
+                        new ItemIngredient(0,new ItemStack(IC2Items.getItem("crushed","iron").getItem(),1),100)
+                ),
+                Arrays.asList(
+                        new ItemIngredient(3,new ItemStack(ModItems.IRONOREDUST,1),100),
+                        new ItemIngredient(3,new ItemStack(ModItems.IRONOREDUST,1),50)
+                ),
+                600,
+                100
+        ));
+
+        GrinderTileEntity.addRecipe(new BasicMachineRecipe(
+                Arrays.asList(
+                        new ItemIngredient(0,new ItemStack(IC2Items.getItem("crushed","lead").getItem(),1),100)
+                ),
+                Arrays.asList(
+                        new ItemIngredient(3,new ItemStack(ModItems.LEADOREDUST,1),100),
+                        new ItemIngredient(3,new ItemStack(ModItems.LEADOREDUST,1),50)
+                ),
+                600,
+                100
+        ));
+
+        GrinderTileEntity.addRecipe(new BasicMachineRecipe(
+                Arrays.asList(
+                        new ItemIngredient(0,new ItemStack(IC2Items.getItem("crushed","silver").getItem(),1),100)
+                ),
+                Arrays.asList(
+                        new ItemIngredient(3,new ItemStack(ModItems.SILVEROREDUST,1),100),
+                        new ItemIngredient(3,new ItemStack(ModItems.SILVEROREDUST,1),50)
+                ),
+                600,
+                100
+        ));
+
+        GrinderTileEntity.addRecipe(new BasicMachineRecipe(
+                Arrays.asList(
+                        new ItemIngredient(0,new ItemStack(IC2Items.getItem("crushed","tin").getItem(),1),100)
+                ),
+                Arrays.asList(
+                        new ItemIngredient(3,new ItemStack(ModItems.TINOREDUST,1),100),
+                        new ItemIngredient(3,new ItemStack(ModItems.TINOREDUST,1),50)
+                ),
+                600,
+                100
+        ));
+
+        GrinderTileEntity.addRecipe(new BasicMachineRecipe(
+                Arrays.asList(
+                        new ItemIngredient(0,new ItemStack(IC2Items.getItem("crushed","uranium").getItem(),1),100)
+                ),
+                Arrays.asList(
+                        new ItemIngredient(3,new ItemStack(ModItems.URANIUMOREDUST,1),100),
+                        new ItemIngredient(3,new ItemStack(ModItems.URANIUMOREDUST,1),50)
+                ),
+                600,
+                100
         ));
     }
 }

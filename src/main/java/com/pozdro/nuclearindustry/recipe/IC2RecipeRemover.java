@@ -3,6 +3,7 @@ package com.pozdro.nuclearindustry.recipe;
 import ic2.api.recipe.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import ic2.api.recipe.MachineRecipe;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

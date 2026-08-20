@@ -5,3 +5,6 @@ item.nuclearindustry.leadoredust.name=Lead Ore Dust
 item.nuclearindustry.silveroredust.name=Silver Ore Dust
 item.nuclearindustry.tinoredust.name=Tin Ore Dust
 item.nuclearindustry.uraniumoredust.name=Uranium Ore Dust
+
+fluid.copper_leachate=Copper Leachate
+fluid.sulfuric_acid=Sulfuric Acid

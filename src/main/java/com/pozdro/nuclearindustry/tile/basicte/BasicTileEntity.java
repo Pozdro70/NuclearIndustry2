@@ -25,6 +25,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.lwjgl.Sys;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,7 +36,6 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
 
     private int slotCount=0;
     List<TileSlot> slots;
-    protected List<BasicMachineRecipe> recipes = new ArrayList<>();
     private String tileName;
     private int guiID;
 
@@ -106,7 +106,7 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
 
                      if (tileSlot.getSlotType() == SlotType.INPUT_SLOT) {
 
-                         for (BasicMachineRecipe recipe : recipes) {
+                         for (BasicMachineRecipe recipe : getRecipeList()) {
                              for (ItemIngredient input : recipe.inputs()) {
 
                                  if (input.slot() == slot) {
@@ -359,6 +359,9 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
     public abstract BasicMachineGuiHandler<? extends BasicTileEntity> getGuiHandler();
 
     public List<? extends MachineRecipe> getRecipes() {
-        return recipes;
+        return getRecipeList();
     }
+
+    protected abstract List<BasicMachineRecipe> getRecipeList();
+
 }
