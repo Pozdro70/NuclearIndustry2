@@ -3,6 +3,7 @@ package com.pozdro.nuclearindustry;
 
 
 import com.pozdro.nuclearindustry.tile.ModGuiHandler;
+import com.pozdro.nuclearindustry.tile.ModTileEntities;
 import com.pozdro.nuclearindustry.tile.tiles.GrinderTileEntity;
 import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
 import com.pozdro.nuclearindustry.network.ModPacketHandler;
@@ -31,21 +32,7 @@ public class NuclearIndustry {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ModPacketHandler.registerPackets();
-
-        GameRegistry.registerTileEntity(
-                LeacherTileEntity.class,
-                new ResourceLocation(MODID, "leacher")
-        );
-
-        GameRegistry.registerTileEntity(
-                GrinderTileEntity.class,
-                new ResourceLocation(MODID, "grinder")
-        );
-
-        GameRegistry.registerTileEntity(
-                PurifierPressTileEntity.class,
-                new ResourceLocation(MODID, "purifierpress")
-        );
+        ModTileEntities.registerTileEntities();
     }
 
     @Mod.EventHandler
