@@ -30,26 +30,26 @@ public class ModItems {
     }
 
 
-    public static final Item COPPEROREDUST=newItem(new Item()
-            .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(64),"copperoredust");
+    public static final Item COPPER_ORE_DUST=newItem(new Item()
+            .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(64),"copper_ore_dust");
 
-    public static final Item GOLDOREDUST=newItem(new Item()
-            .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(64),"goldoredust");
+    public static final Item GOLD_ORE_DUST=newItem(new Item()
+            .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(64),"gold_ore_dust");
 
-    public static final Item IRONOREDUST=newItem(new Item()
-            .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(64),"ironoredust");
+    public static final Item IRON_ORE_DUST=newItem(new Item()
+            .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(64),"iron_ore_dust");
 
-    public static final Item LEADOREDUST=newItem(new Item()
-            .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(64),"leadoredust");
+    public static final Item LEAD_ORE_DUST=newItem(new Item()
+            .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(64),"lead_ore_dust");
 
-    public static final Item SILVEROREDUST=newItem(new Item()
-            .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(64),"silveroredust");
+    public static final Item SILVER_ORE_DUST=newItem(new Item()
+            .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(64),"silver_ore_dust");
 
-    public static final Item TINOREDUST=newItem(new Item()
-            .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(64),"tinoredust");
+    public static final Item TIN_ORE_DUST=newItem(new Item()
+            .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(64),"tin_ore_dust");
 
-    public static final Item URANIUMOREDUST=newItem(new Item()
-            .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(64),"uraniumoredust");
+    public static final Item URANIUM_ORE_DUST=newItem(new Item()
+            .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(64),"uranium_ore_dust");
 
 
 

@@ -1,7 +1,7 @@
 {
   "variants": {
     "normal": {
-      "model": "nuclearindustry:machinehull"
+      "model": "nuclearindustry:copper_coil"
     }
   }
 }

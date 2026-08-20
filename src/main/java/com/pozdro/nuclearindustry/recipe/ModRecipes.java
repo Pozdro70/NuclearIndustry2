@@ -88,7 +88,7 @@ public class ModRecipes {
     public static void addModRecipes() {
         LeacherTileEntity.addRecipe(new TankMachineRecipe(
                 Arrays.asList(
-                        new ItemIngredient(2, new ItemStack(ModItems.COPPEROREDUST, 2), 100)
+                        new ItemIngredient(2, new ItemStack(ModItems.COPPER_ORE_DUST, 2), 100)
                 ),
                 Arrays.asList(
                         new FluidIngredient(0, new FluidStack(ModFluids.SULFURIC_ACID, 500), 100)
@@ -124,8 +124,8 @@ public class ModRecipes {
                         new ItemIngredient(0,new ItemStack(IC2Items.getItem("crushed","copper").getItem(),1),100)
                 ),
                 Arrays.asList(
-                        new ItemIngredient(3,new ItemStack(ModItems.COPPEROREDUST,1),100),
-                        new ItemIngredient(4,new ItemStack(ModItems.COPPEROREDUST,1),50)
+                        new ItemIngredient(3,new ItemStack(ModItems.COPPER_ORE_DUST,1),100),
+                        new ItemIngredient(4,new ItemStack(ModItems.COPPER_ORE_DUST,1),50)
                 ),
                 600,
                 100
@@ -136,8 +136,8 @@ public class ModRecipes {
                         new ItemIngredient(0,new ItemStack(IC2Items.getItem("crushed","gold").getItem(),1),100)
                 ),
                 Arrays.asList(
-                        new ItemIngredient(3,new ItemStack(ModItems.GOLDOREDUST,1),100),
-                        new ItemIngredient(3,new ItemStack(ModItems.GOLDOREDUST,1),50)
+                        new ItemIngredient(3,new ItemStack(ModItems.GOLD_ORE_DUST,1),100),
+                        new ItemIngredient(3,new ItemStack(ModItems.GOLD_ORE_DUST,1),50)
                 ),
                 600,
                 100
@@ -148,8 +148,8 @@ public class ModRecipes {
                         new ItemIngredient(0,new ItemStack(IC2Items.getItem("crushed","iron").getItem(),1),100)
                 ),
                 Arrays.asList(
-                        new ItemIngredient(3,new ItemStack(ModItems.IRONOREDUST,1),100),
-                        new ItemIngredient(3,new ItemStack(ModItems.IRONOREDUST,1),50)
+                        new ItemIngredient(3,new ItemStack(ModItems.IRON_ORE_DUST,1),100),
+                        new ItemIngredient(3,new ItemStack(ModItems.IRON_ORE_DUST,1),50)
                 ),
                 600,
                 100
@@ -160,8 +160,8 @@ public class ModRecipes {
                         new ItemIngredient(0,new ItemStack(IC2Items.getItem("crushed","lead").getItem(),1),100)
                 ),
                 Arrays.asList(
-                        new ItemIngredient(3,new ItemStack(ModItems.LEADOREDUST,1),100),
-                        new ItemIngredient(3,new ItemStack(ModItems.LEADOREDUST,1),50)
+                        new ItemIngredient(3,new ItemStack(ModItems.LEAD_ORE_DUST,1),100),
+                        new ItemIngredient(3,new ItemStack(ModItems.LEAD_ORE_DUST,1),50)
                 ),
                 600,
                 100
@@ -172,8 +172,8 @@ public class ModRecipes {
                         new ItemIngredient(0,new ItemStack(IC2Items.getItem("crushed","silver").getItem(),1),100)
                 ),
                 Arrays.asList(
-                        new ItemIngredient(3,new ItemStack(ModItems.SILVEROREDUST,1),100),
-                        new ItemIngredient(3,new ItemStack(ModItems.SILVEROREDUST,1),50)
+                        new ItemIngredient(3,new ItemStack(ModItems.SILVER_ORE_DUST,1),100),
+                        new ItemIngredient(3,new ItemStack(ModItems.SILVER_ORE_DUST,1),50)
                 ),
                 600,
                 100
@@ -184,8 +184,8 @@ public class ModRecipes {
                         new ItemIngredient(0,new ItemStack(IC2Items.getItem("crushed","tin").getItem(),1),100)
                 ),
                 Arrays.asList(
-                        new ItemIngredient(3,new ItemStack(ModItems.TINOREDUST,1),100),
-                        new ItemIngredient(3,new ItemStack(ModItems.TINOREDUST,1),50)
+                        new ItemIngredient(3,new ItemStack(ModItems.TIN_ORE_DUST,1),100),
+                        new ItemIngredient(3,new ItemStack(ModItems.TIN_ORE_DUST,1),50)
                 ),
                 600,
                 100
@@ -196,8 +196,8 @@ public class ModRecipes {
                         new ItemIngredient(0,new ItemStack(IC2Items.getItem("crushed","uranium").getItem(),1),100)
                 ),
                 Arrays.asList(
-                        new ItemIngredient(3,new ItemStack(ModItems.URANIUMOREDUST,1),100),
-                        new ItemIngredient(3,new ItemStack(ModItems.URANIUMOREDUST,1),50)
+                        new ItemIngredient(3,new ItemStack(ModItems.URANIUM_ORE_DUST,1),100),
+                        new ItemIngredient(3,new ItemStack(ModItems.URANIUM_ORE_DUST,1),50)
                 ),
                 600,
                 100

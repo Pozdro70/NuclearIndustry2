@@ -37,16 +37,16 @@ public class ModBlocks {
     }
 
     public static final Block MACHINE_HULL=newBlock(new Block(Material.IRON)
-            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "machinehull",1);
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "machine_hull",1);
 
     public static final Block MACHINE_CASING=newBlock(new Block(Material.IRON)
-            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "machinecasing",1);
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "machine_casing",1);
 
     public static final Block COPPER_COIL=newBlock(new Block(Material.IRON)
-            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "coppercoil",1);
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "copper_coil",1);
 
     public static final Block MACHINE_BLOCK=newBlock(new Block(Material.IRON)
-            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "machineblock",1);
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "machine_block",1);
 
     public static final Block LEACHER=newBlock(new BasicMachineBlock<>(Material.IRON, LeacherTileEntity::new)
             .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "leacher",1);
@@ -54,8 +54,8 @@ public class ModBlocks {
     public static final Block GRINDER=newBlock(new BasicMachineBlock<>(Material.IRON, GrinderTileEntity::new)
             .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "grinder",1);
 
-    public static final Block PURIFIERPRESS=newBlock(new BasicMachineBlock<>(Material.IRON, PurifierPressTileEntity::new)
-            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "purifierpress",1);
+    public static final Block PURIFIER_PRESS=newBlock(new BasicMachineBlock<>(Material.IRON, PurifierPressTileEntity::new)
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "purifier_press",1);
 
 
     @SubscribeEvent
