@@ -1,0 +1,9 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "front": "nuclearindustry:blocks/te/purifier_press_on",
+    "side": "nuclearindustry:blocks/te/purifier_press_on",
+    "top": "nuclearindustry:blocks/te/purifier_press_on",
+    "bottom": "nuclearindustry:blocks/te/purifier_press_on"
+  }
+}
