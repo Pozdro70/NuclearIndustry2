@@ -34,12 +34,7 @@ public class TankMachineContainer<
     private int lastEnergy = -1;
     private int lastMaxProgress = -1;
 
-    /*
-     * Stores copies of the previous tank states.
-     *
-     * The TileTank objects here MUST NOT reference the real FluidTank,
-     * otherwise their fluid changes together with the real tank.
-     */
+
     private final List<TileTank> lastFluids = new ArrayList<>();
 
     private final int playerInvYOffset;
@@ -56,9 +51,6 @@ public class TankMachineContainer<
         lastProgress = tile.getProgress();
         lastMaxProgress = tile.getMaxProgress();
 
-        /*
-         * Save a COPY of every tank's current state.
-         */
         for (TileTank tileTank : tile.getFluidTanks()) {
 
             FluidStack fluid = tileTank.getTank().getFluid();
@@ -88,9 +80,6 @@ public class TankMachineContainer<
             lastFluids.add(copiedTileTank);
         }
 
-        /*
-         * Machine inventory slots.
-         */
         ItemStackHandler inventoryHandler =
                 tile.getInventoryHandler();
 
@@ -105,9 +94,7 @@ public class TankMachineContainer<
                 )
         );
 
-        /*
-         * Player inventory.
-         */
+
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
 
@@ -122,9 +109,7 @@ public class TankMachineContainer<
             }
         }
 
-        /*
-         * Hotbar.
-         */
+
         for (int col = 0; col < 9; col++) {
 
             addSlotToContainer(
@@ -143,9 +128,7 @@ public class TankMachineContainer<
 
         super.detectAndSendChanges();
 
-        /*
-         * Progress.
-         */
+
         if (tile.getProgress() != lastProgress) {
 
             for (IContainerListener listener : this.listeners) {
@@ -159,9 +142,6 @@ public class TankMachineContainer<
             lastProgress = tile.getProgress();
         }
 
-        /*
-         * Maximum progress.
-         */
         if (tile.getMaxProgress() != lastMaxProgress) {
 
             for (IContainerListener listener : this.listeners) {
@@ -175,9 +155,6 @@ public class TankMachineContainer<
             lastMaxProgress = tile.getMaxProgress();
         }
 
-        /*
-         * Fluid tanks.
-         */
         List<TileTank> curTanks = tile.getFluidTanks();
 
         boolean anyTankChanged = false;
@@ -186,9 +163,6 @@ public class TankMachineContainer<
 
             int id = curTank.getTankID();
 
-            /*
-             * Assuming tank IDs are 0, 1, 2, ...
-             */
             if (id >= lastFluids.size()) {
                 anyTankChanged = true;
                 break;
@@ -200,9 +174,6 @@ public class TankMachineContainer<
             FluidStack last =
                     lastFluids.get(id).getTank().getFluid();
 
-            /*
-             * One is empty and the other isn't.
-             */
             if (current == null || last == null) {
 
                 if (current != last) {
@@ -210,9 +181,6 @@ public class TankMachineContainer<
                     break;
                 }
 
-                /*
-                 * Both contain fluid.
-                 */
             } else if (!current.isFluidEqual(last)
                     || current.amount != last.amount) {
 
@@ -221,17 +189,11 @@ public class TankMachineContainer<
             }
         }
 
-        /*
-         * Something changed -> make new copies and synchronize client.
-         */
         if (anyTankChanged) {
 
             lastFluids.clear();
 
-            /*
-             * IMPORTANT:
-             * Make copies again.
-             */
+
             for (TileTank tileTank : curTanks) {
 
                 FluidStack fluid =
@@ -270,9 +232,6 @@ public class TankMachineContainer<
                 lastFluids.add(copiedTileTank);
             }
 
-            /*
-             * Send the new state to every player viewing the container.
-             */
             for (IContainerListener listener : listeners) {
 
                 if (listener instanceof EntityPlayerMP) {
@@ -288,9 +247,7 @@ public class TankMachineContainer<
             }
         }
 
-        /*
-         * Energy.
-         */
+
         int energy =
                 (int) tile.getEnergySink().getEnergyStored();
 
@@ -362,9 +319,6 @@ public class TankMachineContainer<
             int hotbarEnd =
                     hotbarStart + 9;
 
-            /*
-             * Machine -> player.
-             */
             if (index < machineSlotCount) {
 
                 if (!mergeItemStack(
@@ -376,9 +330,6 @@ public class TankMachineContainer<
                     return ItemStack.EMPTY;
                 }
 
-                /*
-                 * Player inventory -> machine/hotbar.
-                 */
             } else if (index < playerInvEnd) {
 
                 if (!mergeItemStack(
@@ -397,9 +348,6 @@ public class TankMachineContainer<
                     }
                 }
 
-                /*
-                 * Hotbar -> machine/player inventory.
-                 */
             } else if (index < hotbarEnd) {
 
                 if (!mergeItemStack(
@@ -443,18 +391,14 @@ public class TankMachineContainer<
 
         super.addListener(listener);
 
-        /*
-         * Initial progress.
-         */
+
         listener.sendWindowProperty(
                 this,
                 0,
                 tile.getProgress()
         );
 
-        /*
-         * Initial tank state.
-         */
+
         if (listener instanceof EntityPlayerMP) {
 
             ModPacketHandler.INSTANCE.sendTo(
@@ -466,9 +410,7 @@ public class TankMachineContainer<
             );
         }
 
-        /*
-         * Initial energy.
-         */
+
         int energy =
                 (int) tile.getEnergySink().getEnergyStored();
 
@@ -478,9 +420,6 @@ public class TankMachineContainer<
                 energy
         );
 
-        /*
-         * Initial maximum progress.
-         */
         listener.sendWindowProperty(
                 this,
                 2,

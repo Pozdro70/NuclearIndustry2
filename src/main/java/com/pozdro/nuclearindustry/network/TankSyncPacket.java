@@ -29,24 +29,15 @@ public class TankSyncPacket implements IMessage {
     public TankSyncPacket() {
     }
 
-    /**
-     * Used when sending the packet from server -> client.
-     */
     public TankSyncPacket(BlockPos pos, List<TileTank> tanks) {
         this.pos = pos;
         this.tanks = tanks;
     }
 
-    /**
-     * Convenience constructor if you have the tanks first.
-     */
     public TankSyncPacket(List<TileTank> tanks, BlockPos pos) {
         this.pos = pos;
         this.tanks = new ArrayList<>();
 
-        // IMPORTANT:
-        // Add ALL tanks, including empty tanks.
-        // Empty tanks need to be synchronized too.
         for (TileTank tileTank : tanks) {
             this.tanks.add(tileTank);
         }
@@ -57,20 +48,16 @@ public class TankSyncPacket implements IMessage {
 
         PacketBuffer pb = new PacketBuffer(buf);
 
-        // Block position
         pb.writeLong(pos.toLong());
 
-        // Number of tanks
         pb.writeInt(tanks.size());
 
         for (TileTank tileTank : tanks) {
 
-            // Tank ID
             pb.writeInt(tileTank.getTankID());
 
             FluidStack fluid = tileTank.getTank().getFluid();
 
-            // Does the tank contain fluid?
             pb.writeBoolean(fluid != null);
 
             if (fluid != null) {
@@ -78,7 +65,6 @@ public class TankSyncPacket implements IMessage {
                 pb.writeCompoundTag(fluidNBT);
             }
 
-            // Tank capacity
             pb.writeInt(tileTank.getTank().getCapacity());
         }
     }
@@ -88,20 +74,16 @@ public class TankSyncPacket implements IMessage {
 
         PacketBuffer pb = new PacketBuffer(buf);
 
-        // Block position
         pos = BlockPos.fromLong(pb.readLong());
 
-        // Number of tanks
         int size = pb.readInt();
 
         tanks = new ArrayList<>();
 
         for (int i = 0; i < size; i++) {
 
-            // Tank ID
             int tankID = pb.readInt();
 
-            // Is there fluid?
             boolean present = pb.readBoolean();
 
             FluidStack fluid = null;
@@ -123,16 +105,8 @@ public class TankSyncPacket implements IMessage {
                 }
             }
 
-            // Tank capacity
             int tankCapacity = pb.readInt();
 
-            /*
-             * We only need the tank ID and fluid on the client.
-             *
-             * The other TileTank properties are placeholders because
-             * the real tank configuration already exists in the
-             * client-side TileEntity.
-             */
             tanks.add(
                     new TileTank(
                             tankID,
