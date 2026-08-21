@@ -13,6 +13,7 @@ tile.nuclearindustry:copper_coil.name=Copper Coil
 tile.nuclearindustry:purifier_press.name=Purifier Press
 tile.nuclearindustry:leacher.name=Leacher
 tile.nuclearindustry:grinder.name=Grinder
+tile.nuclearindustry:item_barrel.name=Item Barrel
 
 fluid.copper_leachate=Copper Leachate
 fluid.sulfuric_acid=Sulfuric Acid
