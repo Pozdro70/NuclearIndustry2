@@ -2,7 +2,9 @@ package com.pozdro.nuclearindustry;
 
 
 
+import com.pozdro.nuclearindustry.command.CommandReloadResources;
 import com.pozdro.nuclearindustry.tile.ModGuiHandler;
+import com.pozdro.nuclearindustry.tile.ModTileEntities;
 import com.pozdro.nuclearindustry.tile.tiles.GrinderTileEntity;
 import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
 import com.pozdro.nuclearindustry.network.ModPacketHandler;
@@ -13,6 +15,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.LogManager;
@@ -31,21 +34,7 @@ public class NuclearIndustry {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ModPacketHandler.registerPackets();
-
-        GameRegistry.registerTileEntity(
-                LeacherTileEntity.class,
-                new ResourceLocation(MODID, "leacher")
-        );
-
-        GameRegistry.registerTileEntity(
-                GrinderTileEntity.class,
-                new ResourceLocation(MODID, "grinder")
-        );
-
-        GameRegistry.registerTileEntity(
-                PurifierPressTileEntity.class,
-                new ResourceLocation(MODID, "purifierpress")
-        );
+        ModTileEntities.registerTileEntities();
     }
 
     @Mod.EventHandler
@@ -68,4 +57,10 @@ public class NuclearIndustry {
     }
 
 
+    //rejstracja komendy na reloadowanie resource bo mi klawiatura
+    // nie dziala cos to komende zrobilem
+    @Mod.EventHandler
+    public void serverStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandReloadResources());
+    }
 }

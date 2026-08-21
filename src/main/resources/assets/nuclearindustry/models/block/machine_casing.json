@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "nuclearindustry:blocks/machinecasing"
+    "all": "nuclearindustry:blocks/machine_casing"
   }
 }

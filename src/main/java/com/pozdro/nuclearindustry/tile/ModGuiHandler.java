@@ -1,7 +1,6 @@
 package com.pozdro.nuclearindustry.tile;
 
-import com.pozdro.nuclearindustry.tile.basicte.BasicMachineGuiHandler;
-import com.pozdro.nuclearindustry.tile.basicte.BasicTileEntity;
+import com.pozdro.nuclearindustry.tile.basicte.*;
 import com.pozdro.nuclearindustry.tile.tankte.TankMachineGuiHandler;
 import com.pozdro.nuclearindustry.tile.tankte.TankTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,6 +45,14 @@ public class ModGuiHandler implements IGuiHandler {
             );
         }
 
+        if (te instanceof BasicChestEntity){
+            BasicChestEntity tile = (BasicChestEntity) te;
+            BasicChestGuiHandler<?> handler = tile.getGuiHandler();
+            return handler.getServerGuiElement(
+                    ID, player, world, x, y, z
+            );
+        }
+
         return null;
     }
 
@@ -79,6 +86,12 @@ public class ModGuiHandler implements IGuiHandler {
             return handler.getClientGuiElement(
                     ID, player, world, x, y, z
             );
+        }
+
+        if(te instanceof BasicChestEntity) {
+            BasicChestEntity tile = (BasicChestEntity) te;
+            BasicChestGuiHandler<?> handler = tile.getGuiHandler();
+            return handler.getClientGuiElement(ID, player, world, x, y, z);
         }
 
         return null;

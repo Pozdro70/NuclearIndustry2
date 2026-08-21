@@ -1,10 +1,19 @@
-item.nuclearindustry.copperoredust.name=Copper Ore Dust
-item.nuclearindustry.goldoredust.name=Gold Ore Dust
-item.nuclearindustry.ironoredust.name=Iron Ore Dust
-item.nuclearindustry.leadoredust.name=Lead Ore Dust
-item.nuclearindustry.silveroredust.name=Silver Ore Dust
-item.nuclearindustry.tinoredust.name=Tin Ore Dust
-item.nuclearindustry.uraniumoredust.name=Uranium Ore Dust
+item.nuclearindustry.copper_ore_dust.name=Copper Ore Dust
+item.nuclearindustry.gold_ore_dust.name=Gold Ore Dust
+item.nuclearindustry.iron_ore_dust.name=Iron Ore Dust
+item.nuclearindustry.lead_ore_dust.name=Lead Ore Dust
+item.nuclearindustry.silver_ore_dust.name=Silver Ore Dust
+item.nuclearindustry.tin_ore_dust.name=Tin Ore Dust
+item.nuclearindustry.uranium_ore_dust.name=Uranium Ore Dust
+
+tile.nuclearindustry:machine_block.name=Machine Block
+tile.nuclearindustry:machine_casing.name=Machine Casing
+tile.nuclearindustry:machine_hull.name=Machine Hull
+tile.nuclearindustry:copper_coil.name=Copper Coil
+tile.nuclearindustry:purifier_press.name=Purifier Press
+tile.nuclearindustry:leacher.name=Leacher
+tile.nuclearindustry:grinder.name=Grinder
+tile.nuclearindustry:metal_barrel.name=Metal Barrel
 
 fluid.copper_leachate=Copper Leachate
 fluid.sulfuric_acid=Sulfuric Acid

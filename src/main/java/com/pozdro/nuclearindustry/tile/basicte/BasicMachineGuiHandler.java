@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +23,10 @@ public class BasicMachineGuiHandler<T extends TileEntity & IHasInventory & IHasP
     }
      */
 
-    List<TileSlot> guiSlots;
+    private final List<TileSlot> guiSlots;
+
     private final ResourceLocation guiTexture;
+
     private final Class<T> tile;
     private final String containerName;
     private final boolean drawArrowHorizontally;
@@ -85,5 +88,51 @@ public class BasicMachineGuiHandler<T extends TileEntity & IHasInventory & IHasP
                 guiTexture,containerName,
                 guiWitdh,guiHeight,drawArrowHorizontally,arrowHightPx,arrowWidthPx,arrowDrawX,arrowDrawY,arrowSpriteX,arrowSpriteY,playerInvYOffset,
                 energyBarPosX,energyBarPosY,energyBarRenderHeight) : null;
+    }
+
+    //USED BY JEI
+
+    public ResourceLocation getGuiTexture() {
+        return guiTexture;
+    }
+
+    public int getGuiHeight() {
+        return guiHeight;
+    }
+
+    public int getGuiWitdh() {
+        return guiWitdh;
+    }
+
+    public String getContainerName() {
+        return containerName;
+    }
+
+    public List<TileSlot> getGuiSlots() {
+        return new ArrayList<TileSlot>(guiSlots);
+    }
+
+    public int getArrowSpriteY() {
+        return arrowSpriteY;
+    }
+
+    public int getArrowSpriteX() {
+        return arrowSpriteX;
+    }
+
+    public int getArrowDrawY() {
+        return arrowDrawY;
+    }
+
+    public int getArrowDrawX() {
+        return arrowDrawX;
+    }
+
+    public int getArrowWidthPx() {
+        return arrowWidthPx;
+    }
+
+    public int getArrowHightPx() {
+        return arrowHightPx;
     }
 }
