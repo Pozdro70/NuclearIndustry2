@@ -71,13 +71,13 @@ public class ModFluids {
         return block;
     }
 
-    public static final Fluid SULFURIC_ACID= newFluid("sulfuric_acid", 0xFFF2F0B0).setDensity(1800).setViscosity(1500);
+    public static final Fluid SULFURIC_ACID = newFluid("sulfuric_acid", 0xFFF2F0B0).setDensity(1800).setViscosity(1500);
     public static final BlockFluidClassic SULFURIC_ACID_BLOCK = newFluidBlock(new BlockFluidClassic(SULFURIC_ACID, Material.WATER));
 
-    public static final Fluid COPPER_LEACHATE= newFluid("copper_leachate", 0xFF20AFA0).setDensity(1800).setViscosity(1500);
+    public static final Fluid COPPER_LEACHATE = newFluid("copper_leachate", 0xFF20AFA0).setDensity(1800).setViscosity(1500);
     public static final BlockFluidClassic COPPER_LEACHATE_BLOCK = newFluidBlock(new BlockFluidClassic(COPPER_LEACHATE, Material.WATER));
 
-    public static final Fluid COPPER_SOLUTION= newFluid("copper_solution", 0xB818B8B0).setDensity(1800).setViscosity(1500);
+    public static final Fluid COPPER_SOLUTION = newFluid("copper_solution", 0xB818B8B0).setDensity(1800).setViscosity(1500);
     public static final BlockFluidClassic COPPER_SOLUTION_BLOCK = newFluidBlock(new BlockFluidClassic(COPPER_SOLUTION, Material.WATER));
 
 

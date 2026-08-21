@@ -2,6 +2,7 @@ package com.pozdro.nuclearindustry;
 
 
 
+import com.pozdro.nuclearindustry.command.CommandReloadResources;
 import com.pozdro.nuclearindustry.tile.ModGuiHandler;
 import com.pozdro.nuclearindustry.tile.ModTileEntities;
 import com.pozdro.nuclearindustry.tile.tiles.GrinderTileEntity;
@@ -14,6 +15,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.LogManager;
@@ -55,4 +57,10 @@ public class NuclearIndustry {
     }
 
 
+    //rejstracja komendy na reloadowanie resource bo mi klawiatura
+    // nie dziala cos to komende zrobilem
+    @Mod.EventHandler
+    public void serverStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandReloadResources());
+    }
 }
