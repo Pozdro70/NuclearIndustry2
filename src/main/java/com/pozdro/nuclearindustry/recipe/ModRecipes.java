@@ -137,7 +137,7 @@ public class ModRecipes {
                 ),
                 Arrays.asList(
                         new ItemIngredient(3,new ItemStack(ModItems.GOLD_ORE_DUST,1),100),
-                        new ItemIngredient(3,new ItemStack(ModItems.GOLD_ORE_DUST,1),50)
+                        new ItemIngredient(4,new ItemStack(ModItems.GOLD_ORE_DUST,1),50)
                 ),
                 600,
                 100
@@ -149,7 +149,7 @@ public class ModRecipes {
                 ),
                 Arrays.asList(
                         new ItemIngredient(3,new ItemStack(ModItems.IRON_ORE_DUST,1),100),
-                        new ItemIngredient(3,new ItemStack(ModItems.IRON_ORE_DUST,1),50)
+                        new ItemIngredient(4,new ItemStack(ModItems.IRON_ORE_DUST,1),50)
                 ),
                 600,
                 100
@@ -161,7 +161,7 @@ public class ModRecipes {
                 ),
                 Arrays.asList(
                         new ItemIngredient(3,new ItemStack(ModItems.LEAD_ORE_DUST,1),100),
-                        new ItemIngredient(3,new ItemStack(ModItems.LEAD_ORE_DUST,1),50)
+                        new ItemIngredient(4,new ItemStack(ModItems.LEAD_ORE_DUST,1),50)
                 ),
                 600,
                 100
@@ -173,7 +173,7 @@ public class ModRecipes {
                 ),
                 Arrays.asList(
                         new ItemIngredient(3,new ItemStack(ModItems.SILVER_ORE_DUST,1),100),
-                        new ItemIngredient(3,new ItemStack(ModItems.SILVER_ORE_DUST,1),50)
+                        new ItemIngredient(4,new ItemStack(ModItems.SILVER_ORE_DUST,1),50)
                 ),
                 600,
                 100
@@ -185,7 +185,7 @@ public class ModRecipes {
                 ),
                 Arrays.asList(
                         new ItemIngredient(3,new ItemStack(ModItems.TIN_ORE_DUST,1),100),
-                        new ItemIngredient(3,new ItemStack(ModItems.TIN_ORE_DUST,1),50)
+                        new ItemIngredient(4,new ItemStack(ModItems.TIN_ORE_DUST,1),50)
                 ),
                 600,
                 100
@@ -197,7 +197,7 @@ public class ModRecipes {
                 ),
                 Arrays.asList(
                         new ItemIngredient(3,new ItemStack(ModItems.URANIUM_ORE_DUST,1),100),
-                        new ItemIngredient(3,new ItemStack(ModItems.URANIUM_ORE_DUST,1),50)
+                        new ItemIngredient(4,new ItemStack(ModItems.URANIUM_ORE_DUST,1),50)
                 ),
                 600,
                 100
