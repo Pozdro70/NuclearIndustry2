@@ -21,7 +21,7 @@ import java.util.*;
 public class GrinderTileEntity extends BasicTileEntity implements ITickable {
 
     private final BasicSink sink = new BasicSink(this,10000,1);
-    private static final List<BasicMachineRecipe> RECIPES = new ArrayList<>();
+    public static final List<BasicMachineRecipe> RECIPES = new ArrayList<>();
 
 
     static List<TileSlot> guiSlots= Arrays.asList(
@@ -73,26 +73,30 @@ public class GrinderTileEntity extends BasicTileEntity implements ITickable {
         this.maxProgress=data;
     }
 
+    public static final BasicMachineGuiHandler<GrinderTileEntity> basicMachineGuiHandler=
+            new BasicMachineGuiHandler<>(
+                    guiSlots,
+                    new ResourceLocation(NuclearIndustry.MODID, "textures/gui/grindergui.png"),
+                    GrinderTileEntity.class,
+                    "Grinder",
+                    true,
+                    30,
+                    71,
+                    30,46,
+                    176,0,
+                    176,
+                    181,
+                    15,
+                    9,25,
+                    56,
+                    1
+            );
+
     @Override
     public BasicMachineGuiHandler<? extends BasicTileEntity> getGuiHandler() {
-        return new BasicMachineGuiHandler<>(
-                guiSlots,
-                new ResourceLocation(NuclearIndustry.MODID, "textures/gui/grindergui.png"),
-                GrinderTileEntity.class,
-                "Grinder",
-                true,
-                30,
-                71,
-                30,46,
-                176,0,
-                176,
-                181,
-                15,
-                9,25,
-                56,
-                1
-        );
+        return basicMachineGuiHandler;
     }
+
 
     @Override
     protected List<BasicMachineRecipe> getRecipeList() {
