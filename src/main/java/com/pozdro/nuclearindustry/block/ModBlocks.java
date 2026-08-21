@@ -3,10 +3,10 @@ package com.pozdro.nuclearindustry.block;
 import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
 import com.pozdro.nuclearindustry.tile.tiles.GrinderTileEntity;
+import com.pozdro.nuclearindustry.tile.tiles.MetalBarrelTileEntity;
 import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
 import com.pozdro.nuclearindustry.item.ModCreativeTabs;
 import com.pozdro.nuclearindustry.tile.tiles.PurifierPressTileEntity;
-import com.pozdro.nuclearindustry.tile.tiles.item_barrelTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -58,8 +58,8 @@ public class ModBlocks {
     public static final Block PURIFIER_PRESS=newBlock(new BasicMachineBlock<>(Material.IRON, PurifierPressTileEntity::new)
             .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "purifier_press",1);
 
-    public static final Block TESTER = newBlock(new BasicMachineBlock<>(Material.IRON, item_barrelTileEntity::new)
-            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "item_barrel", 1);
+    public static final Block METAL_BARREL = newBlock(new BasicMachineBlock<>(Material.IRON, MetalBarrelTileEntity::new)
+            .setHardness(3.0F).setResistance(5.0F).setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB), "metal_barrel", 1);
 
 
     @SubscribeEvent

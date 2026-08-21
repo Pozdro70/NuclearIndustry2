@@ -2,24 +2,15 @@ package com.pozdro.nuclearindustry.tile.tiles;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.recipe.BasicMachineRecipe;
-import com.pozdro.nuclearindustry.recipe.FluidIngredient;
-import com.pozdro.nuclearindustry.recipe.ItemIngredient;
-import com.pozdro.nuclearindustry.recipe.TankMachineRecipe;
 import com.pozdro.nuclearindustry.tile.basicte.*;
-import ic2.api.energy.prefab.BasicSink;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.*;
 
-public class item_barrelTileEntity extends BasicChestEntity implements ITickable {
+public class MetalBarrelTileEntity extends BasicChestEntity {
     ItemStackHandler inventory;
 
     //helper function for procedurally generating slots in gui
@@ -41,8 +32,8 @@ public class item_barrelTileEntity extends BasicChestEntity implements ITickable
     private static final List<TileSlot> guiSlots = createGridSlots(9, 6, 8, 18);
 
     //constructor
-    public item_barrelTileEntity() {
-        super(guiSlots.toArray().length, guiSlots, "item_barrel", 3);
+    public MetalBarrelTileEntity() {
+        super(guiSlots.toArray().length, guiSlots, "metal_barrel", 3);
         inventory = getInventoryHandler();
 
     }
@@ -52,9 +43,9 @@ public class item_barrelTileEntity extends BasicChestEntity implements ITickable
     public BasicChestGuiHandler<? extends BasicChestEntity> getGuiHandler() {
         return new BasicChestGuiHandler<>(
                 guiSlots,
-                new ResourceLocation(NuclearIndustry.MODID, "textures/gui/item_barrel_gui.png"),
-                item_barrelTileEntity.class,
-                "Item Barrel",
+                new ResourceLocation(NuclearIndustry.MODID, "textures/gui/metal_barrel_gui.png"),
+                MetalBarrelTileEntity.class,
+                "Metal Barrel",
                 176,
                 222,
                 56,
@@ -67,9 +58,4 @@ public class item_barrelTileEntity extends BasicChestEntity implements ITickable
         return Collections.emptyList();
     }
 
-    //hmm
-    @Override
-    public void update() {
-
-    }
 }
