@@ -1,0 +1,9 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "front": "nuclearindustry:blocks/te/metal_barrel_side",
+    "side": "nuclearindustry:blocks/te/metal_barrel_side",
+    "top": "nuclearindustry:blocks/te/metal_barrel_top",
+    "bottom": "nuclearindustry:blocks/te/metal_barrel_top"
+  }
+}

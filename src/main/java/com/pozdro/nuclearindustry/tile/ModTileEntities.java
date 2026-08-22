@@ -2,6 +2,7 @@ package com.pozdro.nuclearindustry.tile;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.tile.tiles.GrinderTileEntity;
+import com.pozdro.nuclearindustry.tile.tiles.MetalBarrelTileEntity;
 import com.pozdro.nuclearindustry.tile.tiles.LeacherTileEntity;
 import com.pozdro.nuclearindustry.tile.tiles.PurifierPressTileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -23,6 +24,11 @@ public class ModTileEntities {
         GameRegistry.registerTileEntity(
                 PurifierPressTileEntity.class,
                 new ResourceLocation(NuclearIndustry.MODID, "purifierpress")
+        );
+
+        GameRegistry.registerTileEntity(
+                MetalBarrelTileEntity.class,
+                new ResourceLocation(NuclearIndustry.MODID, "metal_barrel")
         );
     }
 }
