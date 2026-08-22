@@ -1,7 +1,7 @@
-package com.pozdro.nuclearindustry.tile.basicte;
+package com.pozdro.nuclearindustry.tile.chestte;
 
 import com.pozdro.nuclearindustry.tile.IHasInventory;
-import com.pozdro.nuclearindustry.tile.IHasProgressAndEnergy;
+import com.pozdro.nuclearindustry.tile.basicte.TileSlot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

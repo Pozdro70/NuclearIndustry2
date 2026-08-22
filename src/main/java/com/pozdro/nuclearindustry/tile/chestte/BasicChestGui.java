@@ -1,7 +1,7 @@
-package com.pozdro.nuclearindustry.tile.basicte;
+package com.pozdro.nuclearindustry.tile.chestte;
 
 import com.pozdro.nuclearindustry.tile.IHasInventory;
-import com.pozdro.nuclearindustry.tile.IHasProgressAndEnergy;
+import com.pozdro.nuclearindustry.tile.basicte.TileSlot;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -9,7 +9,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BasicChestGui<T extends TileEntity & IHasInventory> extends GuiContainer {

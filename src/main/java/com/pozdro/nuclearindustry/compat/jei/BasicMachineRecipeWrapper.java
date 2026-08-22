@@ -73,7 +73,7 @@ public class BasicMachineRecipeWrapper implements IRecipeWrapper {
                 continue;
             }
 
-            if(ingredient.probability()==100 || ingredient.probability()==0){continue;}
+            if(ingredient.probability() == 100 || ingredient.probability()==0){continue;}
 
             String text = ingredient.probability() + "%";
 
