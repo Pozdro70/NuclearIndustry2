@@ -1,6 +1,8 @@
 package com.pozdro.nuclearindustry.tile;
 
 import com.pozdro.nuclearindustry.tile.basicte.*;
+import com.pozdro.nuclearindustry.tile.chestte.BasicChestEntity;
+import com.pozdro.nuclearindustry.tile.chestte.BasicChestGuiHandler;
 import com.pozdro.nuclearindustry.tile.tankte.TankMachineGuiHandler;
 import com.pozdro.nuclearindustry.tile.tankte.TankTileEntity;
 import net.minecraft.entity.player.EntityPlayer;

@@ -1,13 +1,13 @@
-package com.pozdro.nuclearindustry.tile.basicte;
+package com.pozdro.nuclearindustry.tile.chestte;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
 import com.pozdro.nuclearindustry.recipe.BasicMachineRecipe;
-import com.pozdro.nuclearindustry.recipe.ItemIngredient;
 import com.pozdro.nuclearindustry.recipe.MachineRecipe;
 import com.pozdro.nuclearindustry.tile.IHasInventory;
-import com.pozdro.nuclearindustry.tile.IHasProgressAndEnergy;
-import ic2.api.energy.prefab.BasicSink;
+import com.pozdro.nuclearindustry.tile.basicte.InventoryHandlerWrapper;
+import com.pozdro.nuclearindustry.tile.basicte.SlotType;
+import com.pozdro.nuclearindustry.tile.basicte.TileSlot;
 import ic2.api.upgrade.IUpgradeItem;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
