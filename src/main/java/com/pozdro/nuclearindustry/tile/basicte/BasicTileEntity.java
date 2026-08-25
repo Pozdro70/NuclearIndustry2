@@ -34,7 +34,7 @@ import java.util.List;
 
 public abstract class BasicTileEntity extends TileEntity implements IHasInventory, IHasProgressAndEnergy {
 
-    private int slotCount=0;
+    private int slotCount = 0;
     List<TileSlot> slots;
     private String tileName;
     private int guiID;
@@ -43,8 +43,7 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
     private final ItemStackHandler inventory;
 
     private EnumFacing rotateSide(EnumFacing localSide) {
-        EnumFacing facing =
-                world.getBlockState(pos).getValue(BasicMachineBlock.FACING);
+        EnumFacing facing = world.getBlockState(pos).getValue(BasicMachineBlock.FACING);
 
         if (localSide == EnumFacing.UP || localSide == EnumFacing.DOWN) {
             return localSide;
