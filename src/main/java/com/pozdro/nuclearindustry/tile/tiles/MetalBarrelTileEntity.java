@@ -3,8 +3,9 @@ package com.pozdro.nuclearindustry.tile.tiles;
 import com.pozdro.nuclearindustry.NuclearIndustry;
 import com.pozdro.nuclearindustry.recipe.BasicMachineRecipe;
 import com.pozdro.nuclearindustry.tile.basicte.*;
+import com.pozdro.nuclearindustry.tile.chestte.BasicChestEntity;
+import com.pozdro.nuclearindustry.tile.chestte.BasicChestGuiHandler;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.ItemStackHandler;
 

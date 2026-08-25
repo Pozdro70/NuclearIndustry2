@@ -94,7 +94,7 @@ public class ModRecipes {
                         new FluidIngredient(0, new FluidStack(ModFluids.SULFURIC_ACID, 500), 100)
                 ),
                 Arrays.asList(
-                        new ItemIngredient(4,new ItemStack(IC2Items.getItem("dust","stone").getItem(),1),70)
+                       // new ItemIngredient(4,new ItemStack(IC2Items.getItem("dust","stone").getItem(),1),70)
                 ),
                 Arrays.asList(
                         new FluidIngredient(1, new FluidStack(ModFluids.COPPER_LEACHATE, 800), 100)
