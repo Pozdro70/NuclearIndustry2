@@ -26,7 +26,7 @@ public  abstract class TankTileEntity extends BasicTileEntity implements ISettab
         super(slotCount, slots, tileName, guiID);
     }
 
-    protected List<TileTank> tanks;
+    protected static List<TileTank> tanks;
 
     private List<TankMachineRecipe> frecipes = new ArrayList<>();
 
@@ -227,11 +227,6 @@ public  abstract class TankTileEntity extends BasicTileEntity implements ISettab
     @Override
     protected List<BasicMachineRecipe> getRecipeList() {
 
-        List<BasicMachineRecipe> brecipe=new ArrayList<>();
-        for (TankMachineRecipe frecipe : frecipes) {
-            brecipe.add(frecipe.getOnlyBasicPart());
-        }
-
-        return brecipe;
+        return new ArrayList<>(frecipes);
     }
 }

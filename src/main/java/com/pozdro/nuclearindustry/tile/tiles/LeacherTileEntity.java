@@ -34,7 +34,7 @@ public class LeacherTileEntity extends TankTileEntity implements ITickable {
 
     ItemStackHandler inventory;
     private boolean isRunning=false;
-    private static final List<TankMachineRecipe> RECIPES = new ArrayList<>();
+    public static final List<TankMachineRecipe> RECIPES = new ArrayList<>();
 
 
     private static final List<TileSlot> guiSlots = Arrays.asList(
@@ -80,26 +80,28 @@ public class LeacherTileEntity extends TankTileEntity implements ITickable {
         );
     }
 
+    public static final TankMachineGuiHandler<LeacherTileEntity> tankMachineGuiHandler=new TankMachineGuiHandler<>(
+            guiSlots,
+            new ResourceLocation(NuclearIndustry.MODID, "textures/gui/leachergui.png"),
+            LeacherTileEntity.class,
+            "Leacher",
+            true,false,
+            26,
+            37,
+            65,39,
+            176,0,
+            176,
+            181,
+            15,
+            9 ,25,
+            56,
+            0,
+            tanks
+    );
+
     @Override
     public TankMachineGuiHandler<? extends TankTileEntity> getTankGuiHandler() {
-        return new TankMachineGuiHandler<>(
-                guiSlots,
-                new ResourceLocation(NuclearIndustry.MODID, "textures/gui/leachergui.png"),
-                LeacherTileEntity.class,
-                "Leacher",
-                true,false,
-                26,
-                37,
-                65,39,
-                176,0,
-                176,
-                181,
-                15,
-                9 ,25,
-                56,
-                0,
-                tanks
-        );
+        return tankMachineGuiHandler;
     }
 
 
