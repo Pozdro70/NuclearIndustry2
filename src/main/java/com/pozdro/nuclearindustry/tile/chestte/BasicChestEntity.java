@@ -6,12 +6,15 @@ import com.pozdro.nuclearindustry.recipe.BasicMachineRecipe;
 import com.pozdro.nuclearindustry.recipe.MachineRecipe;
 import com.pozdro.nuclearindustry.tile.IHasInventory;
 import com.pozdro.nuclearindustry.tile.basicte.InventoryHandlerWrapper;
+import com.pozdro.nuclearindustry.tile.basicte.PortType;
 import com.pozdro.nuclearindustry.tile.basicte.SlotType;
 import com.pozdro.nuclearindustry.tile.basicte.TileSlot;
+import com.typesafe.config.ConfigException;
 import ic2.api.upgrade.IUpgradeItem;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -24,19 +27,29 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-
+import com.pozdro.nuclearindustry.tile.IHasPorts;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class BasicChestEntity extends TileEntity implements IHasInventory {
+public abstract class BasicChestEntity extends TileEntity implements IHasInventory, IHasPorts {
 
-    private int slotCount=0;
+    private int slotCount = 0;
     List<TileSlot> slots;
     private String tileName;
     private int guiID;
 
     private final ItemStackHandler inventory;
+    
+    //default port configuration.
+    private final PortType[] ports = new PortType[] {
+            PortType.NONE_PORT, //down
+            PortType.INPUT_PORT, //up
+            PortType.OUTPUT_PORT, //north
+            PortType.INPUT_PORT, //south
+            PortType.NONE_PORT, //west
+            PortType.NONE_PORT, //east
+    };
 
     private EnumFacing rotateSide(EnumFacing localSide) {
         EnumFacing facing =
@@ -125,6 +138,7 @@ public abstract class BasicChestEntity extends TileEntity implements IHasInvento
 
     private IItemHandler getItemHandlerForSide(@Nullable EnumFacing side){
         return new IItemHandler() {
+
             @Override
             public int getSlots() {
                 return slotCount;
@@ -138,69 +152,39 @@ public abstract class BasicChestEntity extends TileEntity implements IHasInvento
 
             @Nonnull
             @Override
-            public ItemStack insertItem(
-                    int slot,
-                    @Nonnull ItemStack stack,
-                    boolean simulate) {
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 
-                if (slot < 0 || slot >= inventory.getSlots()) {
+                if (slot < 0 || slot >= inventory.getSlots() || stack.isEmpty()) {
+                    return stack;
+                }
+
+                if (side == null || getPortFromSide(side) != PortType.INPUT_PORT){
                     return stack;
                 }
 
                 for (TileSlot tileSlot : slots) {
-
-                    if (tileSlot.getSlotID() != slot) {
-                        continue;
+                    if (tileSlot.getSlotID() == slot) {
+                        if(tileSlot.getSlotType() == SlotType.INPUT_SLOT){
+                            return inventory.insertItem(slot, stack, simulate);
+                        }
                     }
-
-                    if (tileSlot.getSlotType() != SlotType.INPUT_SLOT) {
-                        return stack;
-                    }
-
-                    EnumFacing worldSide =
-                            rotateSide(tileSlot.getSlotInteractionSide());
-
-                    if (worldSide != side) {
-                        return stack;
-                    }
-
-                    return inventory.insertItem(slot, stack, simulate);
                 }
-
                 return stack;
             }
 
             @Nonnull
             @Override
-            public ItemStack extractItem(
-                    int slot,
-                    int amount,
-                    boolean simulate) {
+            public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                if(amount <= 0) return ItemStack.EMPTY;
+                if(side == null || getPortFromSide(side) != PortType.OUTPUT_PORT) return ItemStack.EMPTY;
 
-                for (TileSlot tileSlot : slots) {
-
-                    if (tileSlot.getSlotType() != SlotType.OUTPUT_SLOT) {
-                        continue;
-                    }
-
-                    EnumFacing worldSide =
-                            rotateSide(tileSlot.getSlotInteractionSide());
-
-                    if (worldSide != side) {
-                        continue;
-                    }
-
-                    ItemStack result = inventory.extractItem(
-                            tileSlot.getSlotID(),
-                            amount,
-                            simulate
-                    );
-
-                    if (!result.isEmpty()) {
-                        return result;
+                for(TileSlot tileSlot : slots){
+                    if(tileSlot.getSlotID() == slot){
+                        if(tileSlot.getSlotType() == SlotType.OUTPUT_SLOT){
+                            return inventory.extractItem(slot, amount, simulate);
+                        }
                     }
                 }
-
                 return ItemStack.EMPTY;
             }
 
@@ -303,4 +287,38 @@ public abstract class BasicChestEntity extends TileEntity implements IHasInvento
 
     protected abstract List<BasicMachineRecipe> getRecipeList();
 
+
+    public PortType getPortFromSide(EnumFacing side){
+        if(side == null) return PortType.NONE_PORT;
+        return ports[side.getIndex()];
+    }
+    public EnumFacing[] getFacesFromPort(PortType portType){
+        if(portType == null) return new EnumFacing[0];
+
+        int n = 0;
+        for(EnumFacing side : EnumFacing.VALUES){
+            if(getPortFromSide(side) == portType) {
+                n++;
+            }
+        }
+        if (n == 0) return new EnumFacing[0];
+
+        EnumFacing[] result = new EnumFacing[n];
+        int index = 0;
+        for (EnumFacing side : EnumFacing.VALUES){
+            if(getPortFromSide(side) == portType) result[index++] = side;
+        }
+
+        return result;
+    }
+    public void setPort(EnumFacing side, PortType port){
+        if(side != null){
+            this.ports[side.getIndex()] = port;
+            markDirty();
+            if(this.world != null && !this.world.isRemote){
+                IBlockState state = world.getBlockState(pos);
+                world.notifyBlockUpdate(pos, state, state, 3);
+            }
+        }
+    }
 }
