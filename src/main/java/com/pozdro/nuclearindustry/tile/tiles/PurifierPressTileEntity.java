@@ -35,7 +35,7 @@ public class PurifierPressTileEntity extends TankTileEntity implements ITickable
 
     ItemStackHandler inventory;
     private boolean isRunning=false;
-    private static final List<TankMachineRecipe> RECIPES = new ArrayList<>();
+    public static final List<TankMachineRecipe> RECIPES = new ArrayList<>();
 
 
     private static final List<TileSlot> guiSlots = Arrays.asList(
@@ -54,7 +54,7 @@ public class PurifierPressTileEntity extends TankTileEntity implements ITickable
     );
 
     public PurifierPressTileEntity() {
-        super(guiSlots.toArray().length, guiSlots, "purifierpress", 2);
+        super(guiSlots.toArray().length, guiSlots, "purifier_press", 2);
         inventory=getInventoryHandler();
         setTankMachineRecipes(new ArrayList<>(RECIPES));
         tanks= Arrays.asList(
@@ -80,26 +80,28 @@ public class PurifierPressTileEntity extends TankTileEntity implements ITickable
         );
     }
 
+    public static final TankMachineGuiHandler<PurifierPressTileEntity> tankMachineGuiHandler=new TankMachineGuiHandler<>(
+            guiSlots,
+            new ResourceLocation(NuclearIndustry.MODID, "textures/gui/purifierpressgui.png"),
+            PurifierPressTileEntity.class,
+            "Purifier Press",
+            false,false,
+            57,
+            37,
+            65,6,
+            176,0,
+            176,
+            181,
+            15,
+            9 ,25,
+            56,
+            2,
+            tanks
+    );
+
     @Override
     public TankMachineGuiHandler<? extends TankTileEntity> getTankGuiHandler() {
-        return new TankMachineGuiHandler<>(
-                guiSlots,
-                new ResourceLocation(NuclearIndustry.MODID, "textures/gui/purifierpressgui.png"),
-                PurifierPressTileEntity.class,
-                "Purifier Press",
-                false,false,
-                57,
-                37,
-                65,6,
-                176,0,
-                176,
-                181,
-                15,
-                9 ,25,
-                56,
-                2,
-                tanks
-        );
+        return tankMachineGuiHandler;
     }
 
 

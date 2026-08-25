@@ -3,6 +3,7 @@ package com.pozdro.nuclearindustry.tile.tankte;
 import com.pozdro.nuclearindustry.tile.IHasInventory;
 import com.pozdro.nuclearindustry.tile.IHasProgressAndEnergy;
 import com.pozdro.nuclearindustry.tile.ISettableTank;
+import com.pozdro.nuclearindustry.tile.basicte.BasicMachineGuiHandler;
 import com.pozdro.nuclearindustry.tile.basicte.TileSlot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -12,10 +13,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class TankMachineGuiHandler<T extends TileEntity & IHasInventory & IHasProgressAndEnergy & ISettableTank> implements IGuiHandler {
+public class TankMachineGuiHandler<T extends TileEntity & IHasInventory & IHasProgressAndEnergy & ISettableTank> extends BasicMachineGuiHandler<T>
+        implements IGuiHandler {
     /*
     private static final Map<Integer, Map.Entry<Integer, Integer>> guiSlots = new HashMap<>();
     static {
@@ -24,7 +27,7 @@ public class TankMachineGuiHandler<T extends TileEntity & IHasInventory & IHasPr
     }
      */
 
-    List<TileSlot> guiSlots;
+    private final List<TileSlot> guiSlots;
     private final ResourceLocation guiTexture;
     private final Class<T> tile;
     private final String containerName;
@@ -37,14 +40,15 @@ public class TankMachineGuiHandler<T extends TileEntity & IHasInventory & IHasPr
     private final int energyBarPosX,energyBarPosY;
     private final int energyBarRenderHeight;
     private final int guiID;
-    List<TileTank> tanks;
+    private final List<TileTank> tanks;
 
-
-    public TankMachineGuiHandler(List<TileSlot> guiSlots, ResourceLocation guiTexture, Class<T> tile, String containerName,
-                                 boolean drawArrowHorizontally, boolean invertDrawDirection, int arrowHightPx, int arrowWidthPx, int arrowDrawX, int arrowDrawY, int arrowSpriteX,
+    public TankMachineGuiHandler(List<TileSlot> guiSlots, ResourceLocation guiTexture, Class<T> tile, String containerName, boolean drawArrowHorizontally,
+                                 boolean invertDrawDirection, int arrowHightPx, int arrowWidthPx, int arrowDrawX, int arrowDrawY, int arrowSpriteX,
                                  int arrowSpriteY, int guiWitdh, int guiHeight, int playerInvYOffset, int energyBarPosX, int energyBarPosY,
-                                 int energyBarRenderHeight, int guiID, List<TileTank> tanks){
+                                 int energyBarRenderHeight, int guiID, List<TileTank> tanks) {
 
+        super(guiSlots, guiTexture, tile, containerName, drawArrowHorizontally, arrowHightPx, arrowWidthPx, arrowDrawX, arrowDrawY, arrowSpriteX,
+                arrowSpriteY, guiWitdh, guiHeight, playerInvYOffset, energyBarPosX, energyBarPosY, energyBarRenderHeight, guiID);
         this.guiSlots = guiSlots;
         this.guiTexture = guiTexture;
         this.tile = tile;
@@ -64,7 +68,7 @@ public class TankMachineGuiHandler<T extends TileEntity & IHasInventory & IHasPr
         this.energyBarPosY = energyBarPosY;
         this.energyBarRenderHeight = energyBarRenderHeight;
         this.guiID = guiID;
-        this.tanks=tanks;
+        this.tanks = tanks;
     }
 
 
@@ -92,4 +96,51 @@ public class TankMachineGuiHandler<T extends TileEntity & IHasInventory & IHasPr
                 guiWitdh,guiHeight,drawArrowHorizontally,invertDrawDirection,arrowHightPx,arrowWidthPx,arrowDrawX,arrowDrawY,arrowSpriteX,arrowSpriteY,playerInvYOffset,
                 energyBarPosX,energyBarPosY,energyBarRenderHeight,tanks) : null;
     }
+
+    //USED BY JEI
+
+    public ResourceLocation getGuiTexture() {
+        return guiTexture;
+    }
+
+    public int getGuiHeight() {
+        return guiHeight;
+    }
+
+    public int getGuiWitdh() {
+        return guiWitdh;
+    }
+
+    public String getContainerName() {
+        return containerName;
+    }
+
+    public List<TileSlot> getGuiSlots() {
+        return new ArrayList<TileSlot>(guiSlots);
+    }
+
+    public int getArrowSpriteY() {
+        return arrowSpriteY;
+    }
+
+    public int getArrowSpriteX() {
+        return arrowSpriteX;
+    }
+
+    public int getArrowDrawY() {
+        return arrowDrawY;
+    }
+
+    public int getArrowDrawX() {
+        return arrowDrawX;
+    }
+
+    public int getArrowWidthPx() {
+        return arrowWidthPx;
+    }
+
+    public int getArrowHightPx() {return arrowHightPx;}
+
+    public List<TileTank> getGuiTanks() {return tanks;}
+
 }

@@ -23,7 +23,7 @@ public class ModTileEntities {
 
         GameRegistry.registerTileEntity(
                 PurifierPressTileEntity.class,
-                new ResourceLocation(NuclearIndustry.MODID, "purifierpress")
+                new ResourceLocation(NuclearIndustry.MODID, "purifier_press")
         );
 
         GameRegistry.registerTileEntity(
