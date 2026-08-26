@@ -1,6 +1,7 @@
 package com.pozdro.nuclearindustry.item;
 
 import com.pozdro.nuclearindustry.NuclearIndustry;
+import com.pozdro.nuclearindustry.item.custom.ScrewdriverItem;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -50,6 +51,9 @@ public class ModItems {
 
     public static final Item URANIUM_ORE_DUST=newItem(new Item()
             .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(64),"uranium_ore_dust");
+
+    public  static final Item SCREWDRIVER = newItem(new ScrewdriverItem()
+            .setCreativeTab(ModCreativeTabs.NUCLEAR_INDUSTRY_MAIN_TAB).setMaxStackSize(1), "screwdriver");
 
 
 

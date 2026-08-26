@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod.EventBusSubscriber(modid = "nuclearindustry", value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = NuclearIndustry.MODID, value = Side.CLIENT)
 public class ClientRegistryHandler {
     @SubscribeEvent
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
