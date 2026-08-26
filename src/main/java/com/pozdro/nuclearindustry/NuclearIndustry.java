@@ -37,8 +37,8 @@ public class NuclearIndustry {
         //bindujemy uniwersalny FastTESR z PortRenderer.java do naszych klas TileEntity
         if (event.getSide().isClient()) {
             ClientRegistry.bindTileEntitySpecialRenderer(BasicChestEntity.class, new PortRenderer<>());
+            //ClientRegistry.bindTileEntitySpecialRenderer(TankTileEntity.class, new PortRenderer<>()); <--- to odkomentujemy jak bede dzialac porty w TankTileEntity
         }
-        //ClientRegistry.bindTileEntitySpecialRenderer(TankTileEntity.class, new PortRenderer<>()); <--- to odkomentujemy jak bede dzialac porty w TankTileEntity
     }
 
     @Mod.EventHandler
