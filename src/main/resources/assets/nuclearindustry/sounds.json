@@ -1,0 +1,8 @@
+{
+  "screwdriver_use": {
+    "category": "player",
+    "sounds": [
+      "nuclearindustry:screwdriver_use"
+    ]
+  }
+}

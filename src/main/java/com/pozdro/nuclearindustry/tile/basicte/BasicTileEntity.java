@@ -5,7 +5,6 @@ import com.pozdro.nuclearindustry.block.custom.BasicMachineBlock;
 import com.pozdro.nuclearindustry.recipe.BasicMachineRecipe;
 import com.pozdro.nuclearindustry.recipe.ItemIngredient;
 import com.pozdro.nuclearindustry.recipe.MachineRecipe;
-import com.pozdro.nuclearindustry.recipe.TankMachineRecipe;
 import com.pozdro.nuclearindustry.tile.IHasInventory;
 import com.pozdro.nuclearindustry.tile.IHasProgressAndEnergy;
 import ic2.api.energy.prefab.BasicSink;
@@ -25,11 +24,9 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org.lwjgl.Sys;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BasicTileEntity extends TileEntity implements IHasInventory, IHasProgressAndEnergy {
@@ -42,7 +39,17 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
     boolean active;
     private final ItemStackHandler inventory;
 
-    private EnumFacing rotateSide(EnumFacing localSide) {
+    //default port configuration.
+    private final PortType[] ports = new PortType[] {
+            PortType.NONE_PORT, //down
+            PortType.INPUT_PORT, //up
+            PortType.NONE_PORT, //north
+            PortType.NONE_PORT, //south
+            PortType.NONE_PORT, //west
+            PortType.NONE_PORT, //east
+    };
+
+    private EnumFacing localToWorldSide(EnumFacing localSide) {
         EnumFacing facing = world.getBlockState(pos).getValue(BasicMachineBlock.FACING);
 
         if (localSide == EnumFacing.UP || localSide == EnumFacing.DOWN) {
@@ -73,7 +80,7 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
         this.tileName = tileName;
         this.guiID = guiID;
 
-         inventory = new ItemStackHandler(slotCount){
+        inventory = new ItemStackHandler(slotCount){
             @Override
             protected void onContentsChanged(int slot) {
                 markDirty();
@@ -120,9 +127,7 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
 
                  return false;
              }
-    };
-
-
+        };
     }
 
     private IItemHandler getItemHandlerForSide(@Nullable EnumFacing side){
@@ -160,7 +165,7 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
                     }
 
                     EnumFacing worldSide =
-                            rotateSide(tileSlot.getSlotInteractionSide());
+                            localToWorldSide(tileSlot.getSlotInteractionSide());
 
                     if (worldSide != side) {
                         return stack;
@@ -186,7 +191,7 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
                     }
 
                     EnumFacing worldSide =
-                            rotateSide(tileSlot.getSlotInteractionSide());
+                            localToWorldSide(tileSlot.getSlotInteractionSide());
 
                     if (worldSide != side) {
                         continue;

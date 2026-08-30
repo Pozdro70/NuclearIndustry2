@@ -58,19 +58,4 @@ public class MetalBarrelTileEntity extends BasicChestEntity {
     protected List<BasicMachineRecipe> getRecipeList() {
         return Collections.emptyList();
     }
-
-    @Override
-    public PortType getPortFromSide(EnumFacing side) {
-        return null;
-    }
-
-    @Override
-    public EnumFacing[] getFacesFromPort(PortType portType) {
-        return new EnumFacing[0];
-    }
-
-    @Override
-    public void setPort(EnumFacing side, PortType port) {
-
-    }
 }

@@ -9,14 +9,14 @@ import com.pozdro.nuclearindustry.tile.basicte.InventoryHandlerWrapper;
 import com.pozdro.nuclearindustry.tile.basicte.PortType;
 import com.pozdro.nuclearindustry.tile.basicte.SlotType;
 import com.pozdro.nuclearindustry.tile.basicte.TileSlot;
-import com.typesafe.config.ConfigException;
 import ic2.api.upgrade.IUpgradeItem;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -45,13 +45,13 @@ public abstract class BasicChestEntity extends TileEntity implements IHasInvento
     private final PortType[] ports = new PortType[] {
             PortType.NONE_PORT, //down
             PortType.INPUT_PORT, //up
-            PortType.OUTPUT_PORT, //north
-            PortType.INPUT_PORT, //south
+            PortType.NONE_PORT, //north
+            PortType.NONE_PORT, //south
             PortType.NONE_PORT, //west
             PortType.NONE_PORT, //east
     };
 
-    private EnumFacing rotateSide(EnumFacing localSide) {
+    private EnumFacing localToWorldSide(EnumFacing localSide) {
         EnumFacing facing =
                 world.getBlockState(pos).getValue(BasicMachineBlock.FACING);
 
@@ -266,6 +266,12 @@ public abstract class BasicChestEntity extends TileEntity implements IHasInvento
 
         compound.setTag("Inventory", inventory.serializeNBT());
 
+
+        int[] portsIDs = new int[6];
+        for (int i = 0; i < 6; i++) {
+            portsIDs[i] = ports[i].ordinal();
+        }
+        compound.setIntArray("Ports", portsIDs);
         return compound;
     }
 
@@ -275,6 +281,13 @@ public abstract class BasicChestEntity extends TileEntity implements IHasInvento
         super.readFromNBT(compound);
 
         inventory.deserializeNBT(compound.getCompoundTag("Inventory"));
+
+        if (compound.hasKey("Ports")) {
+            int[] portIds = compound.getIntArray("Ports");
+            for (int i = 0; i < 6 && i < portIds.length; i++) {
+                ports[i] = PortType.values()[portIds[i]];
+            }
+        }
     }
 
 
@@ -288,9 +301,10 @@ public abstract class BasicChestEntity extends TileEntity implements IHasInvento
     protected abstract List<BasicMachineRecipe> getRecipeList();
 
 
-    public PortType getPortFromSide(EnumFacing side){
-        if(side == null) return PortType.NONE_PORT;
-        return ports[side.getIndex()];
+    public PortType getPortFromSide(EnumFacing worldSide){
+        if(worldSide == null) return PortType.NONE_PORT;
+        EnumFacing localSide = localToWorldSide(worldSide);
+        return ports[localSide.getIndex()];
     }
     public EnumFacing[] getFacesFromPort(PortType portType){
         if(portType == null) return new EnumFacing[0];
@@ -313,12 +327,33 @@ public abstract class BasicChestEntity extends TileEntity implements IHasInvento
     }
     public void setPort(EnumFacing side, PortType port){
         if(side != null){
-            this.ports[side.getIndex()] = port;
+            EnumFacing localSide = side;
+            if(this.world != null && this.world.isBlockLoaded(this.pos)) localSide = localToWorldSide(side);
+
+            this.ports[localSide.getIndex()] = port;
             markDirty();
             if(this.world != null && !this.world.isRemote){
                 IBlockState state = world.getBlockState(pos);
                 world.notifyBlockUpdate(pos, state, state, 3);
             }
         }
+    }
+
+    // upewnia sie czy sa pakiety syncowane
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        return new SPacketUpdateTileEntity(pos, 1, getUpdateTag());
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        return writeToNBT(new NBTTagCompound());
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        readFromNBT(pkt.getNbtCompound());
+        //if(this.world != null && this.world.isRemote)
+        //    this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
     }
 }
