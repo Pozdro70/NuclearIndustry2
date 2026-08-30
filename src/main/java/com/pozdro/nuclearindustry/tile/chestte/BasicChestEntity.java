@@ -52,16 +52,14 @@ public abstract class BasicChestEntity extends TileEntity implements IHasInvento
     };
 
     private EnumFacing localToWorldSide(EnumFacing localSide) {
-        EnumFacing facing =
-                world.getBlockState(pos).getValue(BasicMachineBlock.FACING);
+        EnumFacing facing = null;
+        if (world != null) facing = world.getBlockState(pos).getValue(BasicMachineBlock.FACING);
 
         if (localSide == EnumFacing.UP || localSide == EnumFacing.DOWN) {
             return localSide;
         }
 
         switch (facing) {
-            case NORTH:
-                return localSide;
 
             case EAST:
                 return localSide.rotateY();
@@ -72,6 +70,7 @@ public abstract class BasicChestEntity extends TileEntity implements IHasInvento
             case WEST:
                 return localSide.rotateYCCW();
 
+            case NORTH:
             default:
                 return localSide;
         }
@@ -98,12 +97,11 @@ public abstract class BasicChestEntity extends TileEntity implements IHasInvento
                          continue;
                      }
 
-                     if (tileSlot.getSlotType() == SlotType.OUTPUT_SLOT ||
-                             tileSlot.getSlotType() == SlotType.DISABLED) {
+                     if (tileSlot.getSlotType() == SlotType.OUTPUT_SLOT || tileSlot.getSlotType() == SlotType.DISABLED) {
                          return false;
                      }
 
-                     if(tileSlot.getSlotType()==SlotType.FLUID_HANDLER_SLOT){
+                     if(tileSlot.getSlotType() == SlotType.FLUID_HANDLER_SLOT){
                          IFluidHandlerItem handler =
                                  stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
                          return handler != null;
@@ -355,5 +353,9 @@ public abstract class BasicChestEntity extends TileEntity implements IHasInvento
         readFromNBT(pkt.getNbtCompound());
         //if(this.world != null && this.world.isRemote)
         //    this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
+    }
+    @Override
+    public boolean hasFastRenderer() {
+        return true;
     }
 }

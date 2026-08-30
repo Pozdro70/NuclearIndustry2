@@ -12,6 +12,8 @@ import net.minecraftforge.client.model.animation.FastTESR;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 public class PortRenderer<T extends TileEntity & IHasPorts> extends FastTESR<T> {
 
@@ -19,7 +21,7 @@ public class PortRenderer<T extends TileEntity & IHasPorts> extends FastTESR<T> 
     public static final ResourceLocation OUTPUT_PORT_TEX = new ResourceLocation(NuclearIndustry.MODID, "blocks/te/output_port");
 
     @Override
-    public void renderTileEntityFast(T te, double x, double y, double z, float partialTicks, int destroyStage, float partial, BufferBuilder buffer) {
+    public void renderTileEntityFast(@Nonnull T te, double x, double y, double z, float partialTicks, int destroyStage, float partial, BufferBuilder buffer) {
         buffer.setTranslation(x, y, z);
 
         for(EnumFacing facing : EnumFacing.VALUES){
@@ -47,12 +49,12 @@ public class PortRenderer<T extends TileEntity & IHasPorts> extends FastTESR<T> 
         float factor;
         int color = 255;
         switch (facing) {
-            case UP:    factor = 1.0f; break;
             case DOWN:  factor = 0.5f; break;
             case NORTH:
             case SOUTH: factor = 0.8f; break;
             case EAST:
             case WEST:  factor = 0.6f; break;
+            case UP:
             default:    factor = 1.0f; break;
         }
         color = (int)(color * factor);

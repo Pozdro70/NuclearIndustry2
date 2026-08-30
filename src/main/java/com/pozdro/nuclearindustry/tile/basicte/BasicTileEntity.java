@@ -6,6 +6,7 @@ import com.pozdro.nuclearindustry.recipe.BasicMachineRecipe;
 import com.pozdro.nuclearindustry.recipe.ItemIngredient;
 import com.pozdro.nuclearindustry.recipe.MachineRecipe;
 import com.pozdro.nuclearindustry.tile.IHasInventory;
+import com.pozdro.nuclearindustry.tile.IHasPorts;
 import com.pozdro.nuclearindustry.tile.IHasProgressAndEnergy;
 import ic2.api.energy.prefab.BasicSink;
 import ic2.api.upgrade.IUpgradeItem;
@@ -14,6 +15,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -29,7 +32,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class BasicTileEntity extends TileEntity implements IHasInventory, IHasProgressAndEnergy {
+public abstract class BasicTileEntity extends TileEntity implements IHasInventory, IHasProgressAndEnergy, IHasPorts {
 
     private int slotCount = 0;
     List<TileSlot> slots;
@@ -86,32 +89,30 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
                 markDirty();
             }
 
-             @Override
-             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
 
-                 for (TileSlot tileSlot : slots) {
+                for (TileSlot tileSlot : slots) {
 
-                     if (tileSlot.getSlotID() != slot) {
-                         continue;
-                     }
+                    if (tileSlot.getSlotID() != slot) {
+                        continue;
+                    }
 
-                     if (tileSlot.getSlotType() == SlotType.OUTPUT_SLOT ||
-                             tileSlot.getSlotType() == SlotType.DISABLED) {
-                         return false;
-                     }
+                    if (tileSlot.getSlotType() == SlotType.OUTPUT_SLOT || tileSlot.getSlotType() == SlotType.DISABLED) {
+                        return false;
+                    }
 
-                     if(tileSlot.getSlotType()==SlotType.FLUID_HANDLER_SLOT){
-                         IFluidHandlerItem handler =
-                                 stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-                         return handler != null;
-                     }
+                    if(tileSlot.getSlotType() == SlotType.FLUID_HANDLER_SLOT){
+                        IFluidHandlerItem handler =
+                                stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+                        return handler != null;
+                    }
 
-                     if (tileSlot.getSlotType() == SlotType.UPGRADE_SLOT) {
-                         return stack.getItem() instanceof IUpgradeItem;
-                     }
+                    if (tileSlot.getSlotType() == SlotType.UPGRADE_SLOT) {
+                        return stack.getItem() instanceof IUpgradeItem;
+                    }
 
-                     if (tileSlot.getSlotType() == SlotType.INPUT_SLOT) {
-
+                    if (tileSlot.getSlotType() == SlotType.INPUT_SLOT) {
                          for (BasicMachineRecipe recipe : getRecipeList()) {
                              for (ItemIngredient input : recipe.inputs()) {
 
@@ -120,18 +121,18 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
                                  }
                              }
                          }
-
                          return false;
-                     }
-                 }
+                    }
+                }
 
-                 return false;
-             }
+                return false;
+            }
         };
     }
 
     private IItemHandler getItemHandlerForSide(@Nullable EnumFacing side){
         return new IItemHandler() {
+
             @Override
             public int getSlots() {
                 return slotCount;
@@ -145,69 +146,39 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
 
             @Nonnull
             @Override
-            public ItemStack insertItem(
-                    int slot,
-                    @Nonnull ItemStack stack,
-                    boolean simulate) {
+            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
 
-                if (slot < 0 || slot >= inventory.getSlots()) {
+                if (slot < 0 || slot >= inventory.getSlots() || stack.isEmpty()) {
+                    return stack;
+                }
+
+                if (side == null || getPortFromSide(side) != PortType.INPUT_PORT){
                     return stack;
                 }
 
                 for (TileSlot tileSlot : slots) {
-
-                    if (tileSlot.getSlotID() != slot) {
-                        continue;
+                    if (tileSlot.getSlotID() == slot) {
+                        if(tileSlot.getSlotType() == SlotType.INPUT_SLOT){
+                            return inventory.insertItem(slot, stack, simulate);
+                        }
                     }
-
-                    if (tileSlot.getSlotType() != SlotType.INPUT_SLOT) {
-                        return stack;
-                    }
-
-                    EnumFacing worldSide =
-                            localToWorldSide(tileSlot.getSlotInteractionSide());
-
-                    if (worldSide != side) {
-                        return stack;
-                    }
-
-                    return inventory.insertItem(slot, stack, simulate);
                 }
-
                 return stack;
             }
 
             @Nonnull
             @Override
-            public ItemStack extractItem(
-                    int slot,
-                    int amount,
-                    boolean simulate) {
+            public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                if(amount <= 0) return ItemStack.EMPTY;
+                if(side == null || getPortFromSide(side) != PortType.OUTPUT_PORT) return ItemStack.EMPTY;
 
-                for (TileSlot tileSlot : slots) {
-
-                    if (tileSlot.getSlotType() != SlotType.OUTPUT_SLOT) {
-                        continue;
-                    }
-
-                    EnumFacing worldSide =
-                            localToWorldSide(tileSlot.getSlotInteractionSide());
-
-                    if (worldSide != side) {
-                        continue;
-                    }
-
-                    ItemStack result = inventory.extractItem(
-                            tileSlot.getSlotID(),
-                            amount,
-                            simulate
-                    );
-
-                    if (!result.isEmpty()) {
-                        return result;
+                for(TileSlot tileSlot : slots){
+                    if(tileSlot.getSlotID() == slot){
+                        if(tileSlot.getSlotType() == SlotType.OUTPUT_SLOT){
+                            return inventory.extractItem(slot, amount, simulate);
+                        }
                     }
                 }
-
                 return ItemStack.EMPTY;
             }
 
@@ -318,8 +289,21 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
         compound.setInteger("Progress", getProgress());
 
         //compound.setDouble("Energy",getSink().getEnergyStored());
+        if (getSink() != null) {
+            try {
+                getSink().writeToNBT(compound);
+            } catch (Exception e) {
 
-        getSink().writeToNBT(compound);
+            }
+        }
+
+        //ports
+        int[] portsIDs = new int[6];
+        for (int i = 0; i < 6; i++) {
+            portsIDs[i] = ports[i].ordinal();
+        }
+        compound.setIntArray("Ports", portsIDs);
+
         return compound;
     }
 
@@ -334,7 +318,20 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
 
         //getSink().setEnergyStored(compound.getDouble("Energy"));
 
-        getSink().readFromNBT(compound);
+        if (getSink() != null) {
+            try {
+                getSink().readFromNBT(compound);
+            } catch (Exception e) {
+
+            }
+        }
+
+        if (compound.hasKey("Ports")) {
+            int[] portIds = compound.getIntArray("Ports");
+            for (int i = 0; i < 6 && i < portIds.length; i++) {
+                ports[i] = PortType.values()[portIds[i]];
+            }
+        }
     }
 
     public void setActiveBlockstate(boolean state) {
@@ -346,12 +343,14 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
                     pos,
                     world.getBlockState(pos)
                             .withProperty(BasicMachineBlock.LIT, state),
-                    2
+                    3
             );
         }
     }
 
-    public boolean getActiveBlockstate(){return active;}
+    public boolean getActiveBlockstate(){
+        return active;
+    }
 
 
     @Override
@@ -368,4 +367,63 @@ public abstract class BasicTileEntity extends TileEntity implements IHasInventor
 
     protected abstract List<BasicMachineRecipe> getRecipeList();
 
+    public PortType getPortFromSide(EnumFacing worldSide){
+        if(worldSide == null) return PortType.NONE_PORT;
+        EnumFacing localSide = localToWorldSide(worldSide);
+        return ports[localSide.getIndex()];
+    }
+    public EnumFacing[] getFacesFromPort(PortType portType){
+        if(portType == null) return new EnumFacing[0];
+
+        int n = 0;
+        for(EnumFacing side : EnumFacing.VALUES){
+            if(getPortFromSide(side) == portType) {
+                n++;
+            }
+        }
+        if (n == 0) return new EnumFacing[0];
+
+        EnumFacing[] result = new EnumFacing[n];
+        int index = 0;
+        for (EnumFacing side : EnumFacing.VALUES){
+            if(getPortFromSide(side) == portType) result[index++] = side;
+        }
+
+        return result;
+    }
+    public void setPort(EnumFacing side, PortType port){
+        if(side != null){
+            EnumFacing localSide = side;
+            if(this.world != null && this.world.isBlockLoaded(this.pos)) localSide = localToWorldSide(side);
+
+            this.ports[localSide.getIndex()] = port;
+            markDirty();
+            if(this.world != null && !this.world.isRemote){
+                IBlockState state = world.getBlockState(pos);
+                world.notifyBlockUpdate(pos, state, state, 3);
+            }
+        }
+    }
+
+    // upewnia sie czy sa pakiety syncowane
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        return new SPacketUpdateTileEntity(pos, 1, getUpdateTag());
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        return writeToNBT(new NBTTagCompound());
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        readFromNBT(pkt.getNbtCompound());
+        if(this.world != null && this.world.isRemote)
+            this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
+    }
+    @Override
+    public boolean hasFastRenderer() {
+        return true;
+    }
 }

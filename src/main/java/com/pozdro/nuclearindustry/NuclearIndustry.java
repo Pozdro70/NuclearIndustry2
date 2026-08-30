@@ -9,6 +9,7 @@ import com.pozdro.nuclearindustry.network.ModPacketHandler;
 import com.pozdro.nuclearindustry.recipe.ModRecipes;
 import com.pozdro.nuclearindustry.tile.basicte.PortRenderer;
 import com.pozdro.nuclearindustry.tile.chestte.BasicChestEntity;
+import com.pozdro.nuclearindustry.tile.tankte.TankTileEntity;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -37,7 +38,7 @@ public class NuclearIndustry {
         //bindujemy uniwersalny FastTESR z PortRenderer.java do naszych klas TileEntity
         if (event.getSide().isClient()) {
             ClientRegistry.bindTileEntitySpecialRenderer(BasicChestEntity.class, new PortRenderer<>());
-            //ClientRegistry.bindTileEntitySpecialRenderer(TankTileEntity.class, new PortRenderer<>()); <--- to odkomentujemy jak bede dzialac porty w TankTileEntity
+            ClientRegistry.bindTileEntitySpecialRenderer(TankTileEntity.class, new PortRenderer<>());
         }
     }
 

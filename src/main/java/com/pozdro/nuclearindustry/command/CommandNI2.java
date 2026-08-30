@@ -1,5 +1,6 @@
 package com.pozdro.nuclearindustry.command;
 
+import com.pozdro.nuclearindustry.NuclearIndustry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -11,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class CommandNI2 extends CommandBase {
 
@@ -34,8 +36,9 @@ public class CommandNI2 extends CommandBase {
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("rr")) {
                 Minecraft.getMinecraft().addScheduledTask(() -> {
-                    Minecraft.getMinecraft().refreshResources();
-                    sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "NI2: Reloaded JSONs and Textures!"));
+                    FMLClientHandler.instance().refreshResources();
+                    sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "NI2: Reloaded JSONs and textures!"));
+                    NuclearIndustry.LOGGER.info("NI2: Reloaded JSONs and textures!");
                 });
             } else if (args[0].equalsIgnoreCase("nbt")) {
                 if (!(sender instanceof EntityPlayer)) {
